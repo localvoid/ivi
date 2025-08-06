@@ -1,6 +1,6 @@
 import {
   type TemplateDescriptor, type VAny,
-  _h, _hN, _hE, _s, _sN, _sE, _T, _t
+  _hN, _hE, _sN, _sE, _T, _t
 } from "../lib/core.js";
 import { type TemplateNode, TemplateNodeType, compileTemplate } from "../template/compiler.js";
 import { TEMPLATE_TYPE_HTM, TEMPLATE_TYPE_SVG } from "../template/ir.js";
@@ -56,10 +56,10 @@ export const html = (strings: TemplateStringsArray, ...exprs: any[]) => {
 
     const roots = result.roots;
     if (roots.length === 1) {
-      const root = prepareRootNode(roots[0], _hE, _h);
+      const root = prepareRootNode(roots[0], _hE, _hN);
       fn = (exprs) => createRootNode(root, exprs);
     } else {
-      const entries = roots.map((root) => prepareRootNode(root, _hE, _h));
+      const entries = roots.map((root) => prepareRootNode(root, _hE, _hN));
       fn = (exprs) => entries.map((root) => createRootNode(root, exprs));
     }
     DESCRIPTORS.set(strings, fn);
@@ -118,10 +118,10 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
 
     const roots = result.roots;
     if (roots.length === 1) {
-      const root = prepareRootNode(roots[0], _sE, _s);
+      const root = prepareRootNode(roots[0], _sE, _sN);
       fn = (exprs) => createRootNode(root, exprs);
     } else {
-      const entries = roots.map((root) => prepareRootNode(root, _hE, _h));
+      const entries = roots.map((root) => prepareRootNode(root, _hE, _hN));
       fn = (exprs) => entries.map((root) => createRootNode(root, exprs));
     }
     DESCRIPTORS.set(strings, fn);

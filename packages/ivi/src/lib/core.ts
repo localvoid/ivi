@@ -1411,7 +1411,7 @@ const markLIS = (a: Int32Array): void => {
  * 
  * @__NO_SIDE_EFFECTS__
  */
-export const _h = (t: string | Node): () => Element => (
+export const _hN = (t: string | Node): () => Element => (
   () => {
     if (typeof t === "string") {
       HTM_TEMPLATE.innerHTML = t;
@@ -1419,18 +1419,6 @@ export const _h = (t: string | Node): () => Element => (
     }
     return nodeCloneNode.call(t, true) as Element;
   }
-);
-
-/**
- * Creates a HTML Template factory.
- * 
- * @__NO_SIDE_EFFECTS__
- */
-export const _hN = (t: string): () => Element => (
-  () => (
-    HTM_TEMPLATE.innerHTML = t,
-    HTM_TEMPLATE_CONTENT.firstChild! as Element
-  )
 );
 
 /**
@@ -1445,7 +1433,7 @@ export const _hE = (t: string): () => Element => (
 /**
  * Creates a SVG Template cloning factory.
  */
-export const _s = (t: string | Node): () => Element => (
+export const _sN = (t: string | Node): () => Element => (
   () => {
     if (typeof t === "string") {
       SVG_TEMPLATE.innerHTML = t;
@@ -1453,18 +1441,6 @@ export const _s = (t: string | Node): () => Element => (
     }
     return nodeCloneNode.call(t, true) as Element;
   }
-);
-
-/**
- * Creates a SVG Template factory.
- * 
- * @__NO_SIDE_EFFECTS__
- */
-export const _sN = (t: string): () => Element => (
-  () => (
-    SVG_TEMPLATE.innerHTML = t,
-    SVG_TEMPLATE_CONTENT.firstChild! as Element
-  )
 );
 
 /**
