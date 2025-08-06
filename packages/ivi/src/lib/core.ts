@@ -1619,7 +1619,7 @@ export const useEffect: Effect = <P>(
 let _layoutEffects: (() => void)[] = [];
 let _idleEffects: (() => void)[] = [];
 
-const _flushLayoutEffects = () => {
+const _flushAnimationFrameEffects = () => {
   while (_layoutEffects.length > 0) {
     const e = _layoutEffects;
     _layoutEffects = [];
@@ -1667,7 +1667,7 @@ export const useAnimationFrameEffect: Effect = <P>(
       pending = true;
       const queue = _layoutEffects;
       if (queue.length === 0) {
-        _requestAnimationFrame(_flushLayoutEffects);
+        _requestAnimationFrame(_flushAnimationFrameEffects);
       }
       queue.push(() => {
         if (pending === true) {
