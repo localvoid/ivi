@@ -1,0 +1,32 @@
+{
+  "name": "@ivi/compiler-linux-x64-gnu",
+  "version": "0.1.0",
+  "cpu": [
+    "x64"
+  ],
+  "main": "ivi-compiler.linux-x64-gnu.node",
+  "files": [
+    "ivi-compiler.linux-x64-gnu.node"
+  ],
+  "description": "ivi compiler NAPI",
+  "keywords": [
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/localvoid/ivi.git"
+  },
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "os": [
+    "linux"
+  ],
+  "libc": [
+    "glibc"
+  ]
+}

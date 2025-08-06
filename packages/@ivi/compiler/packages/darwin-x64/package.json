@@ -1,0 +1,29 @@
+{
+  "name": "@ivi/compiler-darwin-x64",
+  "version": "0.1.0",
+  "cpu": [
+    "x64"
+  ],
+  "main": "ivi-compiler.darwin-x64.node",
+  "files": [
+    "ivi-compiler.darwin-x64.node"
+  ],
+  "description": "ivi compiler NAPI",
+  "keywords": [
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/localvoid/ivi.git"
+  },
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "os": [
+    "darwin"
+  ]
+}
