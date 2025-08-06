@@ -1,7 +1,0 @@
-{
-  "extends": "../tsconfig.composite.json",
-  "references": [
-    { "path": "../packages/ivi" },
-    { "path": "../packages/@ivi/mock-dom" },
-  ],
-}

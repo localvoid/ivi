@@ -70,7 +70,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - uses: pnpm/action-setup@v4
       - uses: oven-sh/setup-bun@v2
       - uses: extractions/setup-just@v3
       - uses: dtolnay/rust-toolchain@stable
@@ -123,7 +122,6 @@ jobs:
         with:
           node-version: 24
           architecture: ${{ matrix.settings.architecture }}
-      - uses: pnpm/action-setup@v4
       - uses: oven-sh/setup-bun@v2
       - uses: extractions/setup-just@v3
       - uses: actions/cache@v4

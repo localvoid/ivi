@@ -1,4 +1,4 @@
-export const enum NodeType {
+export enum NodeType {
   Element = 1,
   Attribute = 2,
   Text = 3,

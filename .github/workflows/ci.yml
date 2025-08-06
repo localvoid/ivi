@@ -1,5 +1,8 @@
 name: CI
-
+env:
+  ACTION_CACHE_PATH: |
+    ~/.bun/install/cache
+    node_modules/
 on:
   workflow_dispatch:
   workflow_call:
@@ -14,16 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
-          cache: "pnpm"
-      - run: make init
-      - run: make build
-      - run: make test
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+      - uses: extractions/setup-just@v3
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.ACTION_CACHE_PATH }}
+          key: CI
+      - run: just init
+      - run: just tsc
+      - run: just test
         env:
           CI: true

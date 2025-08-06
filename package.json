@@ -1,5 +1,10 @@
 {
   "private": true,
+  "workspaces": [
+    "packages/@ivi/*",
+    "packages/@ivi/compiler/packages/*",
+    "packages/ivi"
+  ],
   "scripts": {
     "clean": "rm -rf ./node_modules ./tsconfig.tsbuildinfo",
     "build": "tsc -b",
@@ -8,6 +13,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.2.0",
+    "@types/bun": "^1.2.19",
     "@napi-rs/cli": "^3.0.4",
     "typescript": "^5.9.2"
   }
