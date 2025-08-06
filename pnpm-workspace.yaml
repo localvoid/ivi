@@ -1,4 +1,5 @@
 packages:
+  - "packages/@ivi/compiler/packages/*"
   - "packages/@ivi/*"
   - "packages/*"
   - "tests"
