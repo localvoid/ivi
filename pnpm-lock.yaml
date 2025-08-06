@@ -18,7 +18,38 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/@ivi/compiler: {}
+  packages/@ivi/compiler:
+    optionalDependencies:
+      '@ivi/compiler-darwin-arm64':
+        specifier: workspace:*
+        version: link:packages/darwin-arm64
+      '@ivi/compiler-darwin-x64':
+        specifier: workspace:*
+        version: link:packages/darwin-x64
+      '@ivi/compiler-linux-arm64-gnu':
+        specifier: workspace:*
+        version: link:packages/linux-arm64-gnu
+      '@ivi/compiler-linux-x64-gnu':
+        specifier: workspace:*
+        version: link:packages/linux-x64-gnu
+      '@ivi/compiler-win32-arm64-msvc':
+        specifier: workspace:*
+        version: link:packages/win32-arm64-msvc
+      '@ivi/compiler-win32-x64-msvc':
+        specifier: workspace:*
+        version: link:packages/win32-x64-msvc
+
+  packages/@ivi/compiler/packages/darwin-arm64: {}
+
+  packages/@ivi/compiler/packages/darwin-x64: {}
+
+  packages/@ivi/compiler/packages/linux-arm64-gnu: {}
+
+  packages/@ivi/compiler/packages/linux-x64-gnu: {}
+
+  packages/@ivi/compiler/packages/win32-arm64-msvc: {}
+
+  packages/@ivi/compiler/packages/win32-x64-msvc: {}
 
   packages/@ivi/identity:
     devDependencies:
@@ -36,9 +67,9 @@ importers:
 
   packages/@ivi/rollup-plugin:
     dependencies:
-      '@ivi/ts-transformer':
+      '@ivi/compiler':
         specifier: workspace:^
-        version: link:../ts-transformer
+        version: link:../compiler
       '@rollup/pluginutils':
         specifier: ^5.2.0
         version: 5.2.0(rollup@4.46.2)

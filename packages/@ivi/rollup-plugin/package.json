@@ -16,7 +16,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@ivi/ts-transformer": "workspace:^",
+    "@ivi/compiler": "workspace:^",
     "@rollup/pluginutils": "^5.2.0"
   },
   "devDependencies": {

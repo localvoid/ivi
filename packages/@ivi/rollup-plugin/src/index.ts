@@ -1,11 +1,10 @@
 import type { Plugin } from "rollup";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
-import { transformModule, transformChunk, TransformModuleError, HoistOptions } from "@ivi/ts-transformer";
+import { TemplateCompiler, type CompilerOptions } from "@ivi/compiler";
 
-export interface IviOptions {
+export interface IviOptions extends CompilerOptions {
   include?: FilterPattern | undefined;
   exclude?: FilterPattern | undefined;
-  hoist?: HoistOptions;
 }
 
 export function ivi(options?: IviOptions): Plugin {
@@ -13,64 +12,49 @@ export function ivi(options?: IviOptions): Plugin {
     options?.include ?? /\.(m?js|m?ts)$/,
     options?.exclude,
   );
-  const hoist = options?.hoist;
-  const strings = new Map<string, number>();
 
+  const compiler = new TemplateCompiler(options);
   return {
     name: "ivi",
 
-    transform(code: string, id: string) {
+    buildStart() {
+      compiler.reset();
+    },
+
+    async transform(code: string, id: string) {
       if (
         !filter(id) &&
-        // Fast-path to ignore modules that doesn't contain any ivi related
-        // code.
+        // Fast-path for modules that doesn't contain any ivi code.
         !code.includes("ivi")
       ) {
         return null;
       }
 
       try {
-        const strings = new Set<string>();
-        const result = transformModule({ code, strings, hoist });
-        const meta = strings.size > 0
-          ? { ivi: { strings: Array.from(strings.keys()) } }
-          : null;
-        if (result.sourceMapText !== void 0) {
-          return { code: result.outputText.slice(0, -35), map: result.sourceMapText, meta };
-        }
-        return { code: result.outputText.slice(0, -35), meta };
+        const result = await compiler.compileModule(code);
+        const map = result.map;
+        code = result.code;
+        return map ? { code, map } : { code };
       } catch (err) {
-        if (err instanceof TransformModuleError) {
-          this.error(err.message, err.pos);
-        }
+        this.error(`Failed to transform: ${err}`);
       }
     },
 
-    buildEnd() {
-      // Collect ivi strings from modules meta, sort and build an indexed map.
-      strings.clear();
-      const ss = Array.from(
-        Array.from(this.getModuleIds()).reduce(
-          (acc, id) => (this.getModuleInfo(id)?.meta.ivi?.strings?.forEach((s: string) => acc.add(s)), acc),
-          new Set<string>(),
-        ).keys(),
-      ).sort();
-      for (let i = 0; i < ss.length; i++) {
-        strings.set(ss[i], i);
-      }
-    },
 
-    renderChunk(code, chunk) {
+    async renderChunk(code, _chunk) {
       // Fast-path for chunks that doesn't have any ivi code.
-      if (!code.includes("@__IVI")) {
+      if (!code.includes("@ivi")) {
         return;
       }
 
-      const result = transformChunk({ code, strings });
-      if (result.sourceMapText !== void 0) {
-        return { code: result.outputText.slice(0, -35), map: result.sourceMapText };
+      try {
+        const result = await compiler.compileChunk(code);
+        const map = result.map;
+        code = result.code;
+        return map ? { code, map } : { code };
+      } catch (err) {
+        this.error(`Failed to render chunk: ${err}`);
       }
-      return { code: result.outputText.slice(0, -35) };
     },
   };
 }
