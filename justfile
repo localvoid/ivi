@@ -8,6 +8,9 @@ _default:
 
 mod napi
 
+init:
+  pnpm install
+
 tsc *FLAGS:
   tsc -b {{FLAGS}}
 

@@ -1,0 +1,171 @@
+name: NAPI Libraries
+env:
+  DEBUG: napi:*
+  MACOSX_DEPLOYMENT_TARGET: '10.13'
+  CARGO_INCREMENTAL: '1'
+  ACTION_CACHE_PATH: |
+    ~/.cargo/bin/
+    ~/.cargo/registry/index/
+    ~/.cargo/registry/cache/
+    ~/.cargo/git/db/
+    target/
+    ~/.bun/install/cache
+    node_modules/
+permissions:
+  contents: write
+  id-token: write
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        required: false
+        type: boolean
+  push:
+    paths:
+      - crates/**
+      - packages/@ivi/compiler/**
+      - tests/compiler/**
+      - Cargo.lock
+    branches:
+      - master
+  pull_request:
+    paths:
+      - crates/**
+      - packages/@ivi/compiler/**
+      - tests/compiler/**
+      - Cargo.lock
+    branches:
+      - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-napi:
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            build: just napi build --release --target x86_64-unknown-linux-gnu --use-napi-cross
+          - host: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            build: just napi build --release --target aarch64-unknown-linux-gnu --use-napi-cross
+          - host: macos-latest
+            target: x86_64-apple-darwin
+            build: just napi build --release --target x86_64-apple-darwin
+          - host: macos-latest
+            target: aarch64-apple-darwin
+            build: just napi build --release --target aarch64-apple-darwin
+          - host: windows-latest
+            target: x86_64-pc-windows-msvc
+            build: just napi build --release --target x86_64-pc-windows-msvc
+          - host: windows-latest
+            target: aarch64-pc-windows-msvc
+            build: just napi build --release --target aarch64-pc-windows-msvc
+    name: stable - ${{ matrix.settings.target }}
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: extractions/setup-just@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.settings.target }}
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.ACTION_CACHE_PATH }}
+          key: NAPI-${{ matrix.settings.target }}-${{ matrix.settings.host }}
+      - run: just init
+      - run: ${{ matrix.settings.build }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NAPI-${{ matrix.settings.target }}
+          path: ./packages/@ivi/compiler/ivi-compiler.*.node
+          if-no-files-found: error
+  test:
+    name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
+    needs:
+      - build-napi
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            architecture: x64
+          - host: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+            architecture: arm64
+          - host: windows-latest
+            target: x86_64-pc-windows-msvc
+            architecture: x64
+          # Bun doesn't have windows arm64 binaries
+          # - host: windows-11-arm
+          #   target: aarch64-pc-windows-msvc
+          #   architecture: arm64
+          - host: macos-latest
+            target: aarch64-apple-darwin
+            architecture: arm64
+          # Bun is broken on x86_64 macos
+          # - host: macos-latest
+          #   target: x86_64-apple-darwin
+          #   architecture: x64
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          architecture: ${{ matrix.settings.architecture }}
+      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: extractions/setup-just@v3
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.ACTION_CACHE_PATH }}
+          key: ${{ matrix.settings.target }}-${{ matrix.settings.host }}
+      - run: just init
+        if: steps.cache.outputs.cache-hit != 'true'
+      - uses: actions/download-artifact@v4
+        with:
+          name: NAPI-${{ matrix.settings.target }}
+          path: ./packages/@ivi/compiler/
+      - run: just napi test
+  publish:
+    name: Publish
+    if: "${{ inputs.publish }} || startsWith(github.event.head_commit.message, 'publish:')"
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: extractions/setup-just@v3
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.ACTION_CACHE_PATH }}
+          key: NAPI-x86_64-unknown-linux-gnu-ubuntu-latest
+      - run: just init
+        if: steps.cache.outputs.cache-hit != 'true'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: NAPI-*
+          path: napi-artifacts
+      - run: just napi artifacts
+      - name: Publish to NPM
+        run: |
+          npm config set provenance true
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          just napi publish --provenance --access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
