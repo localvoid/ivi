@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { TemplateCompiler } from "@ivi/compiler";
 import { normalizeNewlines } from "../normalize.js";
 
-const compiler = new TemplateCompiler({ oveo: true });
+const compiler = new TemplateCompiler({ oveo: true, dedupeStrings: true });
 beforeEach(() => {
   compiler.reset();
 });

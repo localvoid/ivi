@@ -16,6 +16,7 @@ pub struct CompilerOutput {
 
 #[napi(object)]
 pub struct CompilerOptions {
+    pub dedupe_strings: Option<bool>,
     pub oveo: Option<bool>,
 }
 
@@ -36,7 +37,10 @@ impl TemplateCompiler {
     #[napi(constructor)]
     pub fn new(options: Option<CompilerOptions>) -> Result<Self> {
         let options = if let Some(options) = options {
-            ivi_compiler::CompilerOptions { oveo: options.oveo.unwrap_or(false) }
+            ivi_compiler::CompilerOptions {
+                oveo: options.oveo.unwrap_or(false),
+                dedupe_strings: options.dedupe_strings.unwrap_or(false),
+            }
         } else {
             ivi_compiler::CompilerOptions::default()
         };
@@ -65,7 +69,11 @@ impl TemplateCompiler {
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
     pub fn compile_module(&self, source_text: String) -> AsyncTask<CompileModuleTask> {
-        AsyncTask::new(CompileModuleTask { compiler: self.inner.clone(), source_text })
+        AsyncTask::new(CompileModuleTask {
+            compiler: self.inner.clone(),
+            source_text,
+            dedupe_strings: self.inner.options.dedupe_strings,
+        })
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
@@ -77,6 +85,7 @@ impl TemplateCompiler {
 pub struct CompileModuleTask {
     compiler: Arc<CompilerState>,
     source_text: String,
+    dedupe_strings: bool,
 }
 
 impl Task for CompileModuleTask {
@@ -88,11 +97,13 @@ impl Task for CompileModuleTask {
         let result = compile_module(&self.source_text, &self.compiler.options, &mut strings)
             .map(|v| CompilerOutput { code: v.code, map: v.map })
             .map_err(|err| Error::from_reason(err.to_string()))?;
-        if !strings.is_empty() {
+
+        if self.dedupe_strings && !strings.is_empty() {
             let mut unique = self.compiler.unique_strings.lock().unwrap();
             unique.extend(strings.drain());
             self.compiler.dirty_strings.store(true, Ordering::SeqCst);
         }
+
         Ok(result)
     }
 

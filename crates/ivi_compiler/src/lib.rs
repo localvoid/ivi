@@ -17,6 +17,7 @@ mod tpl;
 
 #[derive(Default, Debug)]
 pub struct CompilerOptions {
+    pub dedupe_strings: bool,
     pub oveo: bool,
 }
 

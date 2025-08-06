@@ -13,5 +13,6 @@ export declare class TemplateCompiler {
 }
 
 export interface CompilerOptions {
+  dedupeStrings?: boolean
   oveo?: boolean
 }

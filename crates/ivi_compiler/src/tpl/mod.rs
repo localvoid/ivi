@@ -32,6 +32,7 @@ pub fn compile_template<'a>(
     kind: TemplateKind,
     imports: &mut ImportSymbols<'a>,
     oveo: bool,
+    dedupe_strings: bool,
 ) -> Result<CompiledTemplate<'a>, OxcDiagnostic> {
     let mut decl = ctx.ast.vec();
     let mut exprs = ctx.ast.vec();
@@ -108,18 +109,22 @@ pub fn compile_template<'a>(
                             NONE,
                             false,
                         ),
-                        Some(ctx.ast.expression_sequence(
-                            SPAN,
-                            ctx.ast.vec_from_array([
-                                ctx.ast.void_0(SPAN),
-                                ctx.ast.expression_string_literal(
-                                    SPAN,
-                                    ctx.ast.atom("@ivi.tpl"),
-                                    None,
-                                ),
-                                template_descriptor,
-                            ]),
-                        )),
+                        Some(if dedupe_strings {
+                            ctx.ast.expression_sequence(
+                                SPAN,
+                                ctx.ast.vec_from_array([
+                                    ctx.ast.void_0(SPAN),
+                                    ctx.ast.expression_string_literal(
+                                        SPAN,
+                                        ctx.ast.atom("@ivi.tpl"),
+                                        None,
+                                    ),
+                                    template_descriptor,
+                                ]),
+                            )
+                        } else {
+                            template_descriptor
+                        }),
                         false,
                     )),
                     false,

@@ -13,7 +13,10 @@ export function ivi(options?: IviOptions): Plugin {
     options?.exclude,
   );
 
-  const compiler = new TemplateCompiler(options);
+  const compiler = new TemplateCompiler({
+    dedupeStrings: options?.dedupeStrings ?? true,
+    oveo: options?.oveo ?? false,
+  });
   return {
     name: "ivi",
 

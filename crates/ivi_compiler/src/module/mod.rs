@@ -134,6 +134,7 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ModuleCompiler<'a, '_> {
                         kind,
                         &mut self.imports,
                         self.options.oveo,
+                        self.options.dedupe_strings,
                     ) {
                         Ok(result) => {
                             for s in result.strings {
