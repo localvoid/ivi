@@ -5,7 +5,7 @@
         "type": "function",
         "arguments": [
           {
-            "hoist": true
+            "scope": true
           }
         ]
       }
