@@ -6,11 +6,18 @@ use oxc_ast::{
 };
 use oxc_span::SPAN;
 
-use crate::tpl::{
-    TemplateKind,
-    html::is_html_void_element,
-    opcodes::{child_op, common_prop_type, prop_op, state_op, template_flags},
-    parser::{TElement, TNode, TNodeKind, TProperty, TPropertyAttributeValue, TPropertyStyleValue},
+use crate::{
+    context::TraverseCtx,
+    import::ImportSymbols,
+    oveo::oveo_intrinsic,
+    tpl::{
+        TemplateKind,
+        html::is_html_void_element,
+        opcodes::{child_op, common_prop_type, prop_op, state_op, template_flags},
+        parser::{
+            TElement, TNode, TNodeKind, TProperty, TPropertyAttributeValue, TPropertyStyleValue,
+        },
+    },
 };
 
 pub enum TemplateNode<'a> {
@@ -33,15 +40,15 @@ pub fn emit_root_element<'a>(
     node: &TNode,
     kind: TemplateKind,
     expressions: &mut ArenaVec<'a, Expression<'a>>,
-    ast: &mut AstBuilder<'a>,
+    ctx: &mut TraverseCtx<'a>,
+    imports: &mut ImportSymbols<'a>,
+    oveo: bool,
 ) -> TemplateNode<'a> {
     match &node.kind {
         TNodeKind::Element(e) => {
-            let statics = emit_static_template(e, expressions, ast);
-            let expr_map = create_expr_map(e);
-            if expr_map.len() > 64 {
-                // Exceeded maximum number (64) of expressions per template block.
-            }
+            let statics = emit_static_template(e, expressions, &mut ctx.ast);
+
+            let expr_map = create_expr_map(e, ctx, expressions, imports, oveo);
 
             let state_op_codes = emit_state_op_codes(e);
             let (props_op_codes, strings) = emit_props_op_codes(node, &expr_map);
@@ -91,13 +98,26 @@ fn count_child_slots(op_codes: &[u32]) -> u32 {
     count
 }
 
-fn create_expr_map(root: &TElement) -> IndexSet<usize> {
+fn create_expr_map<'a>(
+    root: &TElement,
+    ctx: &mut TraverseCtx<'a>,
+    expressions: &mut ArenaVec<'a, Expression<'a>>,
+    imports: &mut ImportSymbols<'a>,
+    oveo: bool,
+) -> IndexSet<usize> {
     let mut map = IndexSet::default();
-    _create_expr_map(&mut map, root);
+    _create_expr_map(&mut map, root, ctx, expressions, imports, oveo);
     map
 }
 
-fn _create_expr_map(map: &mut IndexSet<usize>, node: &TElement) {
+fn _create_expr_map<'a>(
+    map: &mut IndexSet<usize>,
+    node: &TElement,
+    ctx: &mut TraverseCtx<'a>,
+    expressions: &mut ArenaVec<'a, Expression<'a>>,
+    imports: &mut ImportSymbols<'a>,
+    oveo: bool,
+) {
     for p in &node.properties {
         match p {
             TProperty::Attribute(p) => {
@@ -119,7 +139,15 @@ fn _create_expr_map(map: &mut IndexSet<usize>, node: &TElement) {
                 }
             }
             TProperty::Event(p) => {
-                map.insert(p.value.inner());
+                let i = p.value.inner();
+                if oveo {
+                    expressions[i] = oveo_intrinsic(
+                        expressions[i].take_in(ctx.ast.allocator),
+                        imports.hoist(ctx),
+                        ctx,
+                    );
+                }
+                map.insert(i);
             }
             TProperty::Directive(p) => {
                 map.insert(p.inner());
@@ -130,7 +158,7 @@ fn _create_expr_map(map: &mut IndexSet<usize>, node: &TElement) {
     for c in &node.children {
         match &c.kind {
             TNodeKind::Element(e) => {
-                _create_expr_map(map, e);
+                _create_expr_map(map, e, ctx, expressions, imports, oveo);
             }
             TNodeKind::Expr(e) => {
                 map.insert(e.index.inner());

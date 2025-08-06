@@ -39,7 +39,7 @@ pub fn compile_template<'a>(
     let nodes = parser::parse_template(tpl, ctx.scoping())?;
 
     for n in &nodes {
-        let e = emit::emit_root_element(n, kind, &mut tpl.expressions, &mut ctx.ast);
+        let e = emit::emit_root_element(n, kind, &mut tpl.expressions, ctx, imports, oveo);
         match e {
             TemplateNode::Block(t) => {
                 let uid = ctx.generate_uid_in_root_scope("_TPL_", SymbolFlags::ConstVariable);
