@@ -150,6 +150,5 @@ export const enum ChildOpCode {
   SetNext = 0b01,
   SetParent = 0b11,
   Type = 0b11,
-  SetNodeType = 0b01,
   ValueShift = 2,
 }
