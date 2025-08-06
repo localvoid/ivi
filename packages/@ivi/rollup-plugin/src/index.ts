@@ -46,7 +46,7 @@ export function ivi(options?: IviOptions): Plugin {
 
     async renderChunk(code, _chunk) {
       // Fast-path for chunks that doesn't have any ivi code.
-      if (!code.includes("@ivi")) {
+      if (!code.includes("IVI")) {
         return;
       }
 

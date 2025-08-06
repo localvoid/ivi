@@ -31,12 +31,12 @@ impl<'ctx> ChunkCompiler<'ctx> {
 }
 
 impl<'a> Traverse<'a, TraverseCtxState<'a>> for ChunkCompiler<'_> {
-    fn exit_expression(&mut self, node: &mut Expression<'a>, ctx: &mut TraverseCtx<'a>) {
-        if let Expression::SequenceExpression(expr) = node {
-            if expr.expressions.len() == 3 && expr.expressions[0].is_void_0() {
-                if let Expression::StringLiteral(s) = &expr.expressions[1] {
-                    match s.value.as_str() {
-                        "@ivi.strings" => {
+    fn enter_expression(&mut self, node: &mut Expression<'a>, ctx: &mut TraverseCtx<'a>) {
+        match node {
+            Expression::ArrayExpression(expr) => {
+                if expr.elements.len() == 1 {
+                    if let Some(Expression::StringLiteral(s)) = expr.elements[0].as_expression() {
+                        if s.value == STRINGS_UUID {
                             let mut indexed: Vec<_> = self.strings.iter().collect();
                             indexed.sort_by_key(|e| e.1);
 
@@ -48,29 +48,31 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ChunkCompiler<'_> {
                             }
                             *node = ctx.ast.expression_array(SPAN, strings);
                         }
-                        "@ivi.tpl" => {
-                            if let Some(mut expr) = expr.expressions.pop() {
-                                if let Expression::CallExpression(call) = &mut expr {
-                                    if call.arguments.len() > 5 {
-                                        if let Some(Argument::ArrayExpression(tpl_strings)) =
-                                            call.arguments.pop()
-                                        {
-                                            let prop_op_codes = &mut call.arguments[2];
-                                            update_prop_op_codes(
-                                                prop_op_codes.as_expression_mut().unwrap(),
-                                                &tpl_strings.elements,
-                                                self.strings,
-                                            );
-                                        }
-                                    }
-                                }
-                                *node = expr;
-                            }
-                        }
-                        _ => {}
                     }
                 }
             }
+            Expression::CallExpression(expr) => {
+                if let Some("__IVI_TPL__") = expr.callee_name() {
+                    if let Some(mut arg0) = expr.arguments.pop() {
+                        if let Some(Expression::CallExpression(call)) = arg0.as_expression_mut() {
+                            if call.arguments.len() > 5 {
+                                if let Some(Argument::ArrayExpression(tpl_strings)) =
+                                    call.arguments.pop()
+                                {
+                                    let prop_op_codes = &mut call.arguments[2];
+                                    update_prop_op_codes(
+                                        prop_op_codes.as_expression_mut().unwrap(),
+                                        &tpl_strings.elements,
+                                        self.strings,
+                                    );
+                                }
+                            }
+                            *node = arg0.into_expression();
+                        }
+                    }
+                }
+            }
+            _ => {}
         }
     }
 }
@@ -110,3 +112,5 @@ fn update_prop_op_codes<'a>(
         _ => {}
     }
 }
+
+const STRINGS_UUID: &str = "IVI:fa7327d9-0034-492d-bfdf-576548b2d9cc";

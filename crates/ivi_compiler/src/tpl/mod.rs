@@ -45,7 +45,7 @@ pub fn compile_template<'a>(
             TemplateNode::Block(t) => {
                 let uid = ctx.generate_uid_in_root_scope("_TPL_", SymbolFlags::ConstVariable);
 
-                // const _TPL_ = (void 0, "@ivi.tpl", _T(statics, ..opcodes));
+                // const _TPL_ = __IVI_TPL__(_T(statics, ..opcodes));
                 let statics = if let Expression::StringLiteral(_) = t.statics {
                     ctx.ast.expression_call(
                         SPAN,
@@ -110,17 +110,12 @@ pub fn compile_template<'a>(
                             false,
                         ),
                         Some(if dedupe_strings {
-                            ctx.ast.expression_sequence(
+                            ctx.ast.expression_call(
                                 SPAN,
-                                ctx.ast.vec_from_array([
-                                    ctx.ast.void_0(SPAN),
-                                    ctx.ast.expression_string_literal(
-                                        SPAN,
-                                        ctx.ast.atom("@ivi.tpl"),
-                                        None,
-                                    ),
-                                    template_descriptor,
-                                ]),
+                                ctx.ast.expression_identifier(SPAN, ctx.ast.atom("__IVI_TPL__")),
+                                NONE,
+                                ctx.ast.vec_from_array([template_descriptor.into()]),
+                                false,
                             )
                         } else {
                             template_descriptor
