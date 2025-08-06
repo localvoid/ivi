@@ -20,6 +20,8 @@ pub struct TNode {
     pub kind: TNodeKind,
     pub flags: u8,
     pub state_index: u16,
+    pub children_exprs: u16,
+    pub props_exprs: u16,
 }
 
 pub enum TNodeKind {
@@ -29,18 +31,22 @@ pub enum TNodeKind {
 }
 
 impl TNode {
-    pub const HAS_PROPS_EXPRESSIONS: u8 = 1;
-    pub const HAS_CHILDREN_EXPRESSIONS: u8 = 1 << 1;
-    pub const HAS_NEXT_EXPRESSION: u8 = 1 << 2;
-    pub const HAS_NEXT_DOM_NODE: u8 = 1 << 3;
-    pub const HAS_EXPRESSIONS: u8 = Self::HAS_CHILDREN_EXPRESSIONS | Self::HAS_PROPS_EXPRESSIONS;
+    pub const HAS_EXPRESSIONS: u8 = 1;
+    pub const HAS_NEXT_EXPRESSION: u8 = 1 << 1;
+    pub const HAS_NEXT_DOM_NODE: u8 = 1 << 2;
 
     fn new(kind: TNodeKind) -> Self {
-        Self { kind, flags: 0, state_index: 0 }
+        Self { kind, flags: 0, state_index: 0, children_exprs: 0, props_exprs: 0 }
     }
 
     fn text(text: &str) -> Self {
-        Self { kind: TNodeKind::Text(TText { value: text.to_string() }), flags: 0, state_index: 0 }
+        Self {
+            kind: TNodeKind::Text(TText { value: text.to_string() }),
+            flags: 0,
+            state_index: 0,
+            children_exprs: 0,
+            props_exprs: 0,
+        }
     }
 
     fn space_text() -> Self {
@@ -114,8 +120,8 @@ pub fn parse_template<'a>(
     let mut parser = Parser::new(scoping, &tpl.quasis, &tpl.expressions);
     let mut nodes = parser.parse_children_list()?;
     for n in &mut nodes {
-        assign_state_slots(n);
         update_flags(n);
+        assign_state_slots(n);
     }
     Ok(nodes)
 }
@@ -565,64 +571,70 @@ impl WhitespaceState {
 
 // RTL pass
 fn update_flags(node: &mut TNode) {
-    if let TNodeKind::Element(e) = &mut node.kind {
-        let flags = _update_flags(e, 0);
-        node.flags = flags;
-    }
+    _update_flags(node, 0);
 }
-fn _update_flags(node: &mut TElement, flags: u8) -> u8 {
+fn _update_flags(node: &mut TNode, flags: u8) -> u8 {
     let mut flags = flags;
-    for p in &node.properties {
-        match p {
-            TProperty::Attribute(p) => {
-                if let TPropertyAttributeValue::Expr(e) = &p.value
-                    && !e.hoist
-                {
-                    flags |= TNode::HAS_PROPS_EXPRESSIONS;
+    if let TNodeKind::Element(e) = &mut node.kind {
+        let mut props_exprs = 0;
+        for p in &e.properties {
+            match p {
+                TProperty::Attribute(p) => {
+                    if let TPropertyAttributeValue::Expr(e) = &p.value
+                        && !e.hoist
+                    {
+                        props_exprs += 1;
+                        break;
+                    }
+                }
+                TProperty::Style(p) => {
+                    if let TPropertyStyleValue::Expr(_) = &p.value {
+                        props_exprs += 1;
+                        break;
+                    }
+                }
+                TProperty::Value(_)
+                | TProperty::DOMValue(_)
+                | TProperty::Event(_)
+                | TProperty::Directive(_) => {
+                    props_exprs += 1;
                     break;
                 }
-            }
-            TProperty::Style(p) => {
-                if let TPropertyStyleValue::Expr(_) = &p.value {
-                    flags |= TNode::HAS_PROPS_EXPRESSIONS;
-                    break;
-                }
-            }
-            TProperty::Value(_)
-            | TProperty::DOMValue(_)
-            | TProperty::Event(_)
-            | TProperty::Directive(_) => {
-                flags |= TNode::HAS_PROPS_EXPRESSIONS;
-                break;
             }
         }
-    }
 
-    let mut siblings_flags = 0;
-    for c in node.children.iter_mut().rev() {
-        match &mut c.kind {
-            TNodeKind::Element(e) => {
-                let f = _update_flags(e, siblings_flags);
-                c.flags = f;
-                if f & TNode::HAS_EXPRESSIONS != 0 {
-                    flags |= TNode::HAS_CHILDREN_EXPRESSIONS;
-                    siblings_flags |= TNode::HAS_NEXT_EXPRESSION | TNode::HAS_NEXT_DOM_NODE;
-                } else {
+        let mut siblings_flags = 0;
+        let mut children_exprs = 0;
+        for c in e.children.iter_mut().rev() {
+            match &mut c.kind {
+                TNodeKind::Element(_) => {
+                    let f = _update_flags(c, siblings_flags);
+                    if f & TNode::HAS_EXPRESSIONS != 0 {
+                        flags |= TNode::HAS_EXPRESSIONS;
+                        siblings_flags |= TNode::HAS_NEXT_EXPRESSION | TNode::HAS_NEXT_DOM_NODE;
+                    } else {
+                        siblings_flags |= TNode::HAS_NEXT_DOM_NODE;
+                    }
+                }
+                TNodeKind::Text(_) => {
+                    c.flags = siblings_flags;
                     siblings_flags |= TNode::HAS_NEXT_DOM_NODE;
                 }
-            }
-            TNodeKind::Text(_) => {
-                c.flags = siblings_flags;
-                siblings_flags |= TNode::HAS_NEXT_DOM_NODE;
-            }
-            TNodeKind::Expr(_) => {
-                c.flags = siblings_flags;
-                flags |= TNode::HAS_CHILDREN_EXPRESSIONS;
-                siblings_flags |= TNode::HAS_NEXT_EXPRESSION;
+                TNodeKind::Expr(_) => {
+                    siblings_flags |= TNode::HAS_NEXT_EXPRESSION;
+                    c.flags = siblings_flags;
+                    children_exprs += 1;
+                }
             }
         }
-    }
 
+        if props_exprs > 0 || children_exprs > 0 {
+            flags |= TNode::HAS_EXPRESSIONS;
+        }
+        node.flags = flags;
+        node.props_exprs = props_exprs;
+        node.children_exprs = children_exprs;
+    }
     flags
 }
 
@@ -640,7 +652,7 @@ fn _assign_state_slots(node: &mut TNode, mut state_index: u16) -> u16 {
                         prev_expr = false;
                         c.state_index = state_index;
                         state_index += 1;
-                    } else if c.flags & TNode::HAS_EXPRESSIONS != 0 {
+                    } else if c.props_exprs > 0 || c.children_exprs > 0 {
                         c.state_index = state_index;
                         state_index += 1;
                     }

@@ -330,7 +330,7 @@ fn _emit_props_op_codes(
     expr_map: &IndexSet<usize>,
 ) {
     fn string_index(strings: &mut IndexSet<String>, key: &str) -> u32 {
-        if let Some((i, _)) = strings.get_full(key) {
+        if let Some(i) = strings.get_index_of(key) {
             i as u32
         } else {
             let (i, _) = strings.insert_full(key.to_string());
@@ -338,107 +338,114 @@ fn _emit_props_op_codes(
         }
     }
     if let TNodeKind::Element(e) = &node.kind {
-        if !is_root && node.flags & TNode::HAS_PROPS_EXPRESSIONS != 0 {
-            op_codes.push(prop_op::SET_NODE | ((node.state_index as u32) << prop_op::DATA_SHIFT));
-        }
-        for p in &e.properties {
-            match p {
-                TProperty::Attribute(p) => {
-                    if let TPropertyAttributeValue::Expr(expr) = &p.value {
-                        if let Some(i) = expr_map.get_index_of(&expr.index.inner()) {
-                            if p.key == "class" {
+        if node.props_exprs > 0 {
+            if !is_root {
+                op_codes
+                    .push(prop_op::SET_NODE | ((node.state_index as u32) << prop_op::DATA_SHIFT));
+            }
+            for p in &e.properties {
+                match p {
+                    TProperty::Attribute(p) => {
+                        if let TPropertyAttributeValue::Expr(expr) = &p.value {
+                            if let Some(i) = expr_map.get_index_of(&expr.index.inner()) {
+                                if p.key == "class" {
+                                    op_codes.push(
+                                        prop_op::COMMON
+                                            | (common_prop_type::CLASS_NAME << prop_op::DATA_SHIFT)
+                                            | ((i as u32) << prop_op::INPUT_SHIFT),
+                                    );
+                                } else {
+                                    op_codes.push(
+                                        prop_op::ATTRIBUTE
+                                            | (string_index(strings, &p.key)
+                                                << prop_op::DATA_SHIFT)
+                                            | ((i as u32) << prop_op::INPUT_SHIFT),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    TProperty::Value(p) => {
+                        match p.key.as_str() {
+                            "textContent" => {
                                 op_codes.push(
                                     prop_op::COMMON
-                                        | (common_prop_type::CLASS_NAME << prop_op::DATA_SHIFT)
-                                        | ((i as u32) << prop_op::INPUT_SHIFT),
+                                        | (common_prop_type::TEXT_CONTENT << prop_op::DATA_SHIFT)
+                                        | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
                                 );
-                            } else {
+                            }
+                            "innerHTML" => {
                                 op_codes.push(
-                                    prop_op::ATTRIBUTE
+                                    prop_op::COMMON
+                                        | (common_prop_type::INNER_HTML << prop_op::DATA_SHIFT)
+                                        | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
+                                );
+                            }
+                            _ => {
+                                if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
+                                    op_codes.push(
+                                        prop_op::PROPERTY
+                                            | (string_index(strings, &p.key)
+                                                << prop_op::DATA_SHIFT)
+                                            | ((i as u32) << prop_op::INPUT_SHIFT),
+                                    );
+                                }
+                            }
+                        };
+                    }
+                    TProperty::DOMValue(p) => {
+                        match p.key.as_str() {
+                            "textContent" => {
+                                op_codes.push(
+                                    prop_op::COMMON
+                                        | (common_prop_type::TEXT_CONTENT << prop_op::DATA_SHIFT)
+                                        | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
+                                );
+                            }
+                            "innerHTML" => {
+                                op_codes.push(
+                                    prop_op::COMMON
+                                        | (common_prop_type::INNER_HTML << prop_op::DATA_SHIFT)
+                                        | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
+                                );
+                            }
+                            _ => {
+                                if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
+                                    op_codes.push(
+                                        prop_op::DIFF_DOM_PROPERTY
+                                            | (string_index(strings, &p.key)
+                                                << prop_op::DATA_SHIFT)
+                                            | ((i as u32) << prop_op::INPUT_SHIFT),
+                                    );
+                                }
+                            }
+                        };
+                    }
+                    TProperty::Style(p) => {
+                        if let TPropertyStyleValue::Expr(expr_index) = &p.value {
+                            if let Some(i) = expr_map.get_index_of(&expr_index.inner()) {
+                                op_codes.push(
+                                    prop_op::STYLE
                                         | (string_index(strings, &p.key) << prop_op::DATA_SHIFT)
                                         | ((i as u32) << prop_op::INPUT_SHIFT),
                                 );
                             }
                         }
                     }
-                }
-                TProperty::Value(p) => {
-                    match p.key.as_str() {
-                        "textContent" => {
+                    TProperty::Event(p) => {
+                        if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
                             op_codes.push(
-                                prop_op::COMMON
-                                    | (common_prop_type::TEXT_CONTENT << prop_op::DATA_SHIFT)
-                                    | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
-                            );
-                        }
-                        "innerHTML" => {
-                            op_codes.push(
-                                prop_op::COMMON
-                                    | (common_prop_type::INNER_HTML << prop_op::DATA_SHIFT)
-                                    | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
-                            );
-                        }
-                        _ => {
-                            if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
-                                op_codes.push(
-                                    prop_op::PROPERTY
-                                        | (string_index(strings, &p.key) << prop_op::DATA_SHIFT)
-                                        | ((i as u32) << prop_op::INPUT_SHIFT),
-                                );
-                            }
-                        }
-                    };
-                }
-                TProperty::DOMValue(p) => {
-                    match p.key.as_str() {
-                        "textContent" => {
-                            op_codes.push(
-                                prop_op::COMMON
-                                    | (common_prop_type::TEXT_CONTENT << prop_op::DATA_SHIFT)
-                                    | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
-                            );
-                        }
-                        "innerHTML" => {
-                            op_codes.push(
-                                prop_op::COMMON
-                                    | (common_prop_type::INNER_HTML << prop_op::DATA_SHIFT)
-                                    | ((p.value.inner() as u32) << prop_op::INPUT_SHIFT),
-                            );
-                        }
-                        _ => {
-                            if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
-                                op_codes.push(
-                                    prop_op::DIFF_DOM_PROPERTY
-                                        | (string_index(strings, &p.key) << prop_op::DATA_SHIFT)
-                                        | ((i as u32) << prop_op::INPUT_SHIFT),
-                                );
-                            }
-                        }
-                    };
-                }
-                TProperty::Style(p) => {
-                    if let TPropertyStyleValue::Expr(expr_index) = &p.value {
-                        if let Some(i) = expr_map.get_index_of(&expr_index.inner()) {
-                            op_codes.push(
-                                prop_op::STYLE
+                                prop_op::EVENT
                                     | (string_index(strings, &p.key) << prop_op::DATA_SHIFT)
                                     | ((i as u32) << prop_op::INPUT_SHIFT),
                             );
                         }
                     }
-                }
-                TProperty::Event(p) => {
-                    if let Some(i) = expr_map.get_index_of(&p.value.inner()) {
-                        op_codes.push(
-                            prop_op::EVENT
-                                | (string_index(strings, &p.key) << prop_op::DATA_SHIFT)
-                                | ((i as u32) << prop_op::INPUT_SHIFT),
-                        );
-                    }
-                }
-                TProperty::Directive(p) => {
-                    if let Some(i) = expr_map.get_index_of(&p.inner()) {
-                        op_codes.push(prop_op::DIRECTIVE | ((i as u32) << prop_op::INPUT_SHIFT));
+                    TProperty::Directive(p) => {
+                        if let Some(i) = expr_map.get_index_of(&p.inner()) {
+                            op_codes
+                                .push(prop_op::DIRECTIVE | ((i as u32) << prop_op::INPUT_SHIFT));
+                        }
                     }
                 }
             }
@@ -466,7 +473,8 @@ fn _emit_state_op_codes(op_codes: &mut Vec<u32>, node: &TElement) {
         match &c.kind {
             TNodeKind::Element(e) => {
                 let mut op = 0;
-                if state & state_flags::PREV_EXPR != 0 || c.flags & TNode::HAS_EXPRESSIONS != 0 {
+                if state & state_flags::PREV_EXPR != 0 || c.children_exprs > 0 || c.props_exprs > 0
+                {
                     op = state_op::SAVE;
                 }
 
@@ -528,7 +536,7 @@ fn _emit_child_op_codes(
     expr_map: &IndexSet<usize>,
 ) {
     if let TNodeKind::Element(e) = &node.kind {
-        if node.flags & TNode::HAS_CHILDREN_EXPRESSIONS > 0 {
+        if node.children_exprs > 0 {
             if !is_root {
                 op_codes.push(
                     child_op::SET_PARENT | ((node.state_index as u32) << child_op::VALUE_SHIFT),
