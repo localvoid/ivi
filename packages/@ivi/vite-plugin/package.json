@@ -1,6 +1,6 @@
 {
   "name": "@ivi/vite-plugin",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "type": "module",
   "exports": {
     ".": "./dist/index.js"
@@ -23,7 +23,8 @@
   "description": "Vite plugin for ivi library.",
   "license": "MIT",
   "keywords": [
-    "ivi"
+    "ivi",
+    "rollup-plugin"
   ],
   "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
   "homepage": "https://github.com/localvoid/ivi",
