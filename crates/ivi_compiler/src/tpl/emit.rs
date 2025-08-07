@@ -12,7 +12,6 @@ use crate::{
     oveo::oveo_intrinsic,
     tpl::{
         TemplateKind,
-        html::is_html_void_element,
         opcodes::{child_op, common_prop_type, prop_op, state_op, template_flags},
         parser::{
             TElement, TNode, TNodeKind, TProperty, TPropertyAttributeValue, TPropertyStyleValue,
@@ -556,13 +555,13 @@ fn _emit_child_op_codes(
                     }
                     op_codes.push(
                         child_op::CHILD
-                            | (expr_map.get_index_of(&expr_index.index.inner()).unwrap() as u32)
-                                << child_op::VALUE_SHIFT,
+                            | ((expr_map.get_index_of(&expr_index.index.inner()).unwrap() as u32)
+                                << child_op::VALUE_SHIFT),
                     );
                     prev_expr = true;
                 } else {
                     prev_expr = false;
-                    prev_state_index = Some(node.state_index);
+                    prev_state_index = Some(c.state_index);
                 }
             }
         }
