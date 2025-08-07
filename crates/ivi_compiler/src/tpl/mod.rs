@@ -1,5 +1,5 @@
 use indexmap::IndexSet;
-use oxc_allocator::{TakeIn, Vec as ArenaVec};
+use oxc_allocator::TakeIn;
 use oxc_ast::{NONE, ast::*};
 use oxc_diagnostics::OxcDiagnostic;
 use oxc_semantic::SymbolFlags;
@@ -15,7 +15,7 @@ pub mod opcodes;
 mod parser;
 
 pub struct CompiledTemplate<'a> {
-    pub decl: ArenaVec<'a, Statement<'a>>,
+    pub decl: Vec<Statement<'a>>,
     pub expr: Expression<'a>,
     pub strings: Vec<String>,
 }
@@ -34,8 +34,8 @@ pub fn compile_template<'a>(
     oveo: bool,
     dedupe_strings: bool,
 ) -> Result<CompiledTemplate<'a>, OxcDiagnostic> {
-    let mut decl = ctx.ast.vec();
-    let mut exprs = ctx.ast.vec();
+    let mut decl = Vec::new();
+    let mut exprs = Vec::new();
     let mut strings = Vec::new();
     let nodes = parser::parse_template(tpl, ctx.scoping())?;
 
