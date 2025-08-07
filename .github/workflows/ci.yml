@@ -3,17 +3,40 @@ env:
   ACTION_CACHE_PATH: |
     ~/.bun/install/cache
     node_modules/
+permissions:
+  contents: write
+  id-token: write
 on:
   workflow_dispatch:
-  workflow_call:
+    inputs:
+      publish:
+        required: false
+        type: boolean
   push:
-    branches: [master]
+    paths:
+      - packages/**
+      - bun.lock
+      - "!crates/**"
+      - "!packages/@ivi/compiler/**"
+      - "!tests/compiler/**"
+    branches:
+      - master
   pull_request:
-    branches: [master]
-
+    paths:
+      - packages/**
+      - bun.lock
+      - "!crates/**"
+      - "!packages/@ivi/compiler/**"
+      - "!tests/compiler/**"
+    branches:
+      - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  build_test:
-    name: Build & Test
+  publish:
+    name: Publish
+    if: "${{ inputs.publish }} || startsWith(github.event.head_commit.message, 'publish:')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +51,10 @@ jobs:
           key: CI
       - run: just init
       - run: just tsc
-      - run: just test
+      - name: Publish to NPM
+        run: |
+          npm config set provenance true
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          just publish --provenance --access public
         env:
-          CI: true
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

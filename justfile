@@ -17,6 +17,11 @@ test:
 tsc *FLAGS:
   tsc -b {{FLAGS}}
 
+publish *NPM_FLAGS:
+  just _pkg-publish ./packages/@ivi/rollup-plugin/ {{NPM_FLAGS}}
+  just _pkg-publish ./packages/@ivi/vite-plugin/ {{NPM_FLAGS}}
+  just _pkg-publish ./packages/ivi/ {{NPM_FLAGS}}
+
 _pkg-set-version dir ver:
   echo "$(jq --arg v "{{ver}}" '.version = $v' {{dir}}/package.json)" > {{dir}}/package.json
 
