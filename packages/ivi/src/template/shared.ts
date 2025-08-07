@@ -91,3 +91,5 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
     flags,
   };
 };
+
+export const VOID_ELEMENTS = /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/;

@@ -2,6 +2,8 @@ use oxc_ast::ast::{Expression, TemplateElement, TemplateLiteral};
 use oxc_diagnostics::OxcDiagnostic;
 use oxc_semantic::Scoping;
 
+use crate::tpl::html::is_html_void_element;
+
 #[derive(Clone, Copy)]
 pub struct ExprIndex(usize);
 
@@ -58,6 +60,7 @@ pub struct TElement {
     pub tag: String,
     pub properties: Vec<TProperty>,
     pub children: Vec<TNode>,
+    pub void: bool,
 }
 
 pub struct TText {
@@ -370,18 +373,24 @@ impl<'a> Parser<'a> {
         let properties = self.parse_attributes()?;
 
         let mut children = Vec::new();
+        let mut void = false;
         if self.try_consume_char('/').is_some() {
             self.consume_char('>')?;
         } else {
             self.consume_char('>')?;
-            children = self.parse_children_list()?;
-            self.consume_char('<')?;
-            self.consume_char('/')?;
-            self.advance(tag.len());
-            self.consume_whitespace();
-            self.consume_char('>')?;
+
+            if is_html_void_element(&tag) {
+                void = true;
+            } else {
+                children = self.parse_children_list()?;
+                self.consume_char('<')?;
+                self.consume_char('/')?;
+                self.advance(tag.len());
+                self.consume_whitespace();
+                self.consume_char('>')?;
+            }
         }
-        Ok(TElement { tag, properties, children })
+        Ok(TElement { tag, properties, children, void })
     }
 
     fn parse_text(&mut self, whitespace_state: WhitespaceState) -> Result<TText, OxcDiagnostic> {

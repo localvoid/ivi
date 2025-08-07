@@ -16,6 +16,7 @@ import {
 } from "./ir.js";
 import {
   type SNode, SNodeFlags,
+  VOID_ELEMENTS,
   createSNode,
 } from "./shared.js";
 
@@ -210,8 +211,6 @@ const emitStaticTemplate = (root: INodeElement) => {
   }
   return staticTemplate;
 };
-
-const VOID_ELEMENTS = /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/;
 
 const _emitStaticTemplate = (
   staticTemplate: Array<string | number>,

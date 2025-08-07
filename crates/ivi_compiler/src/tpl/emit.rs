@@ -277,7 +277,7 @@ fn _emit_static_template<'a>(
         static_part.push('"');
     }
     static_part.push('>');
-    if is_html_void_element(&node.tag) {
+    if node.void {
         return;
     }
 

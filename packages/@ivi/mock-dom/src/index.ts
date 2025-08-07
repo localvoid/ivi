@@ -891,7 +891,7 @@ function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
       throw new Error(`Invalid HTML [${ctx.i}]: expected a '/' character\n${ctx.s}`);
     }
     if (!ctx.s.substring(ctx.i).startsWith(tagName)) {
-      throw new Error(`Invalid HTML [${ctx.i}]: expected a tag name '${tagName}' character\n${ctx.s}`);
+      throw new Error(`Invalid HTML [${ctx.i}]: expected a tag name '${tagName}'\n${ctx.s}`);
     }
     ctx.i += tagName.length;
     if (!parseCharCode(ctx, CharCode.MoreThan)) {
@@ -1005,9 +1005,7 @@ function parseRegExp(ctx: HTMLParserContext, re: RegExp): string | undefined {
   }
 }
 
-const VOID_ELEMENTS = (
-  /^(embed|input|param|source|track|area|base|link|meta|br|col|hr|img|wbr)$/
-);
+const VOID_ELEMENTS = /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/;
 
 const indent = (i: number, s: string) => " ".repeat(i) + s;
 

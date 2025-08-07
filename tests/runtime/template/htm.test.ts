@@ -54,6 +54,40 @@ describe("@ivi/htm", () => {
     );
   });
 
+  test("void elements", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(html`
+          <a>
+            <audio>
+            <video>
+            <embed>
+            <input>
+            <param>
+            <source>
+            <track>
+            <area>
+            <base>
+            <link>
+            <meta>
+            <br>
+            <col>
+            <hr>
+            <img>
+            <wbr>
+          </a>
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<a><audio><video><embed><input><param><source><track><area><base><link><meta><br><col><hr><img><wbr></a>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 20`,
+        `[1] Node.insertBefore(20, null)`,
+      ],
+    );
+  });
+
   test("whitespace 1", () => {
     const root = createRoot();
     deepStrictEqual(
