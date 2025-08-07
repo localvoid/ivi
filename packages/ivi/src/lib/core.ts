@@ -1690,11 +1690,6 @@ export const useAnimationFrameEffect: Effect = <P>(
   };
 };
 
-/**
- * @deprecated `useLayoutEffect` is renamed to `useAnimationFrameEffect`.
- */
-export const useLayoutEffect = useAnimationFrameEffect;
-
 export const useIdleEffect: Effect = <P>(
   component: Component,
   hook: (props?: P) => (() => void) | void,
