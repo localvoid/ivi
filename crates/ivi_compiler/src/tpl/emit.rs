@@ -259,12 +259,12 @@ fn _emit_static_template<'a>(
             },
             TProperty::Style(p) => {
                 if let TPropertyStyleValue::String(v) = &p.value {
-                    if style.is_empty() {
-                        style = v.clone();
-                    } else {
+                    if !style.is_empty() {
                         style.push(';');
-                        style.push_str(v);
                     }
+                    style.push_str(&p.key);
+                    style.push(':');
+                    style.push_str(v);
                 }
             }
             _ => {}
