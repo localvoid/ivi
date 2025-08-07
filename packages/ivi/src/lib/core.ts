@@ -44,6 +44,13 @@ const nodeInsertBefore: <T extends Node>(this: Node, node: T, child: Node | null
 const nodeRemoveChild: <T extends Node>(this: Node, node: T) => T = nodeProto.removeChild;
 /** `Node.prototype.cloneNode`. */
 const nodeCloneNode: (this: Node, deep?: boolean | undefined) => Node = nodeProto.cloneNode;
+declare global {
+  interface Element {
+    moveBefore<T extends Element | CharacterData>(node: T, child: Node | null): void;
+  }
+}
+/** `Element.prototype.moveBefore` */
+const elementMoveBefore: <T extends Element | CharacterData>(this: Element, node: T, child: Node | null) => void = elementProto.moveBefore ?? nodeInsertBefore;
 /** `Element.prototype.setAttribute` */
 const elementSetAttribute: (this: Element, qualifiedName: string, value: string) => void = elementProto.setAttribute;
 /** `Element.prototype.removeAttribute` */
@@ -575,7 +582,7 @@ const _update = (
         (state as Text).nodeValue = next as string;
       }
       if (updateFlags & Flags.DisplaceNode) {
-        nodeInsertBefore!.call(
+        elementMoveBefore!.call(
           ctx.p,
           (state as Text),
           ctx.n,
@@ -634,7 +641,7 @@ const _update = (
 
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
-      nodeInsertBefore!.call(parentElement, rootDOMNode, ctx.n);
+      elementMoveBefore!.call(parentElement, rootDOMNode, ctx.n);
     }
 
     _updateTemplateProperties(
@@ -835,7 +842,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
     const rootDOMNode = (state as Node[])[0] as Element;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
-      nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
+      elementMoveBefore.call(ctx.p, rootDOMNode, ctx.n);
     }
     if (flags & Flags.DirtySubtree) {
       ctx.p = rootDOMNode;
@@ -864,7 +871,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
     ctx.n = rootDOMNode;
   } else if (type === Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
-      nodeInsertBefore.call(ctx.p, state as Text, ctx.n);
+      elementMoveBefore.call(ctx.p, state as Text, ctx.n);
     }
     ctx.n = state as Text;
   } else if (type === Flags.Component) {
