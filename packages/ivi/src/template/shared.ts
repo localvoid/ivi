@@ -143,9 +143,3 @@ export const isStaticProperty = (prop: IProperty) => (
     prop.hoist === true
   )
 );
-
-const HTML_VOID_ELEMENTS = (
-  /^(embed|input|param|source|track|area|base|link|meta|br|col|hr|img|wbr)$/
-);
-
-export const isVoidElement = (tag: string) => HTML_VOID_ELEMENTS.test(tag);

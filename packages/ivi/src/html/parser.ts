@@ -12,7 +12,7 @@ import {
   PROPERTY_TYPE_ATTRIBUTE,
 } from "../template/ir.js";
 import {
-  CharCode, isVoidElement, TemplateParserError, TemplateScanner,
+  CharCode, TemplateParserError, TemplateScanner,
 } from "../template/parser.js";
 
 export const parseTemplate = (
@@ -115,23 +115,19 @@ export class TemplateParser extends TemplateScanner {
         throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
       }
 
-      if (isVoidElement(tag)) {
-        children = [];
-      } else {
-        children = this.parseChildrenList();
-        if (!this.charCode(CharCode.LessThan)) {
-          throw new TemplateParserError("Expected a '<' character.", this.e, this.i);
-        }
-        if (!this.charCode(CharCode.Slash)) {
-          throw new TemplateParserError("Expected a '/' character.", this.e, this.i);
-        }
-        if (!this.string(tag)) {
-          throw new TemplateParserError(`Expected a '${tag}' tag name.`, this.e, this.i);
-        }
-        this.whitespace();
-        if (!this.charCode(CharCode.MoreThan)) {
-          throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
-        }
+      children = this.parseChildrenList();
+      if (!this.charCode(CharCode.LessThan)) {
+        throw new TemplateParserError("Expected a '<' character.", this.e, this.i);
+      }
+      if (!this.charCode(CharCode.Slash)) {
+        throw new TemplateParserError("Expected a '/' character.", this.e, this.i);
+      }
+      if (!this.string(tag)) {
+        throw new TemplateParserError(`Expected a '${tag}' tag name.`, this.e, this.i);
+      }
+      this.whitespace();
+      if (!this.charCode(CharCode.MoreThan)) {
+        throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
       }
     }
 

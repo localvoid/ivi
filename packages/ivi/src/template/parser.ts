@@ -1,5 +1,3 @@
-export { isVoidElement } from "./shared.js";
-
 export class TemplateParserError extends Error {
   staticsOffset: number;
   textOffset: number;
