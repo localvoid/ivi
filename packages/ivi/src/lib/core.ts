@@ -1646,6 +1646,7 @@ const _flushIdleEffects = () => {
   }
 };
 
+/* @__NO_SIDE_EFFECTS__ */
 export const createEffectHandler = (scheduleFlushTask: () => Array<() => void>) => <P>(
   component: Component,
   hook: (props?: P) => (() => void) | void,
