@@ -161,7 +161,7 @@ export default defineConfig({
 
 ```js
 // rollup.config.mjs
-import { oveo } from "@oveo/vite";
+import { oveo } from "@oveo/rollup";
 import { ivi } from "@ivi/rollup-plugin";
 
 export default {
