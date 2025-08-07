@@ -7,8 +7,6 @@ import { TEMPLATE_TYPE_HTM, TEMPLATE_TYPE_SVG } from "../template/ir.js";
 import { TemplateParserError, formatError } from "../template/parser.js";
 import { parseTemplate } from "./parser.js";
 
-const tryHoistExpr = (i: number) => false;
-
 const DESCRIPTORS = new WeakMap<TemplateStringsArray, (exprs: any[]) => VAny>();
 
 /**
@@ -42,7 +40,7 @@ export const html = (strings: TemplateStringsArray, ...exprs: any[]) => {
   if (fn === void 0) {
     let result;
     try {
-      const tpl = parseTemplate(strings, TEMPLATE_TYPE_HTM, tryHoistExpr);
+      const tpl = parseTemplate(strings, TEMPLATE_TYPE_HTM);
       result = compileTemplate(tpl);
     } catch (e) {
       if (e instanceof TemplateParserError) {
@@ -104,7 +102,7 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
   if (fn === void 0) {
     let result;
     try {
-      const tpl = parseTemplate(strings, TEMPLATE_TYPE_SVG, tryHoistExpr);
+      const tpl = parseTemplate(strings, TEMPLATE_TYPE_SVG);
       result = compileTemplate(tpl);
     } catch (e) {
       if (e instanceof TemplateParserError) {

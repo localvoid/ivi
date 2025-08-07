@@ -18,9 +18,8 @@ import {
 export const parseTemplate = (
   s: string[] | TemplateStringsArray,
   type: ITemplateType,
-  tryHoistExpr: (i: number, staticPart: boolean) => boolean,
 ): ITemplate => {
-  const parser = new TemplateParser(s, tryHoistExpr);
+  const parser = new TemplateParser(s);
   return {
     type,
     children: parser.parse(),
@@ -28,14 +27,10 @@ export const parseTemplate = (
 };
 
 export class TemplateParser extends TemplateScanner {
-  readonly tryHoistExpr: (i: number, staticPart: boolean) => boolean;
-
   constructor(
     statics: string[] | TemplateStringsArray,
-    tryHoistExpr: (i: number, staticPart: boolean) => boolean,
   ) {
     super(statics);
-    this.tryHoistExpr = tryHoistExpr;
   }
 
   parse(): INode[] {
@@ -213,7 +208,6 @@ export class TemplateParser extends TemplateScanner {
           throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
         }
 
-        let staticAttr = false;
         let value: string | boolean | number = true;
         if (this.charCode(CharCode.EqualsTo)) { // =
           const c = this.peekCharCode();
@@ -227,16 +221,12 @@ export class TemplateParser extends TemplateScanner {
             if (value === -1) {
               throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
             }
-            if (key === "class" && this.tryHoistExpr(value, true)) {
-              staticAttr = true;
-            }
           }
         }
         properties.push({
           type: PROPERTY_TYPE_ATTRIBUTE,
           key,
           value,
-          hoist: staticAttr,
         });
       }
       this.whitespace();
@@ -251,9 +241,6 @@ export class TemplateParser extends TemplateScanner {
     const value = this.expr();
     if (value === -1) {
       throw new TemplateParserError("Expected an expression.", this.e, this.i);
-    }
-    if (type === PROPERTY_TYPE_EVENT) {
-      this.tryHoistExpr(value, false);
     }
     properties.push({
       type,

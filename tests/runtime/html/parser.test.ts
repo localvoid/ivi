@@ -20,11 +20,10 @@ import {
 
 const _ = void 0;
 
-const ATTR = (key: string, value: string | boolean | number, hoist = false): IPropertyAttribute => ({
+const ATTR = (key: string, value: string | boolean | number): IPropertyAttribute => ({
   type: PROPERTY_TYPE_ATTRIBUTE,
   key,
   value,
-  hoist,
 });
 
 const PROP = (key: string, value: number): IPropertyValue => ({
@@ -81,15 +80,12 @@ const X = (value: number): INodeExpr => ({
   value,
 });
 
-const preventHoist = () => false;
-
 describe("@ivi/htm/parser", () => {
   test(`a`, () => {
     deepStrictEqual(
       parseTemplate(
         [`a`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -105,7 +101,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -121,7 +116,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a></a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -137,7 +131,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a>a</a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -155,7 +148,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a>`, `</a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -173,7 +165,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a>a`, `</a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -191,7 +182,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a>`, `b</a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -209,7 +199,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<a>a`, `b</a>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -227,7 +216,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`a<a/>b`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -245,7 +233,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`a`, `b`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -268,7 +255,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -290,7 +276,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -310,7 +295,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -333,7 +317,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -358,7 +341,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -383,7 +365,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -407,7 +388,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -429,7 +409,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -453,7 +432,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -477,7 +455,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -504,7 +481,6 @@ describe("@ivi/htm/parser", () => {
         `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -526,7 +502,6 @@ describe("@ivi/htm/parser", () => {
           `</a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -548,7 +523,6 @@ describe("@ivi/htm/parser", () => {
           ` </a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -570,7 +544,6 @@ describe("@ivi/htm/parser", () => {
           ` </a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -594,7 +567,6 @@ describe("@ivi/htm/parser", () => {
           ` </a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -621,7 +593,6 @@ describe("@ivi/htm/parser", () => {
           </a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -644,7 +615,6 @@ describe("@ivi/htm/parser", () => {
           </a>`,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -666,7 +636,6 @@ describe("@ivi/htm/parser", () => {
           `<a> `, ` `, ` </a>`
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -692,7 +661,6 @@ describe("@ivi/htm/parser", () => {
           `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -714,7 +682,6 @@ describe("@ivi/htm/parser", () => {
           `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -736,7 +703,6 @@ describe("@ivi/htm/parser", () => {
           `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -761,7 +727,6 @@ describe("@ivi/htm/parser", () => {
           `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -787,7 +752,6 @@ describe("@ivi/htm/parser", () => {
           `,
         ],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -806,7 +770,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div .a=`, `/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -824,7 +787,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div *a=`, `/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -842,7 +804,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div ~a="0"/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -860,7 +821,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div ~a=`, `/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -878,7 +838,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div @a=`, `/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,
@@ -896,7 +855,6 @@ describe("@ivi/htm/parser", () => {
       parseTemplate(
         [`<div `, `/>`],
         TEMPLATE_TYPE_HTM,
-        preventHoist,
       ),
       {
         type: TEMPLATE_TYPE_HTM,

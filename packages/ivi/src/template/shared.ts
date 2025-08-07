@@ -2,51 +2,8 @@ import {
   NODE_TYPE_ELEMENT,
   NODE_TYPE_EXPR,
   NODE_TYPE_TEXT,
-  PROPERTY_TYPE_ATTRIBUTE,
-  type INode, type INodeElement, type IProperty,
+  type INode, type INodeElement,
 } from "./ir.js";
-
-export const normalizeTemplate = (nodes: INode[]): INode[] => {
-  const n: INode[] = [];
-  let text = "";
-  for (let i = 0; i < nodes.length; i++) {
-    const c = nodes[i];
-    switch (c.type) {
-      case NODE_TYPE_ELEMENT:
-        if (text !== "") {
-          n.push({
-            type: NODE_TYPE_TEXT,
-            value: text,
-          });
-          text = "";
-        }
-        n.push({
-          ...c,
-          children: normalizeTemplate(c.children),
-        });
-        break;
-      case NODE_TYPE_EXPR:
-        if (text !== "") {
-          n.push({
-            type: NODE_TYPE_TEXT,
-            value: text,
-          });
-          text = "";
-        }
-        n.push(c);
-        break;
-      case NODE_TYPE_TEXT:
-        text += c.value;
-    }
-  }
-  if (text !== "") {
-    n.push({
-      type: NODE_TYPE_TEXT,
-      value: text,
-    });
-  }
-  return n;
-};
 
 export const enum SNodeFlags {
   /** Has expressions in the subtree. */
@@ -72,7 +29,7 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
 
   let propsExprs = 0;
   for (let i = 0; i < properties.length; i++) {
-    if (!isStaticProperty(properties[i])) {
+    if (typeof properties[i].value === "number") {
       propsExprs++;
     }
   }
@@ -134,12 +91,3 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
     flags,
   };
 };
-
-export const isStaticProperty = (prop: IProperty) => (
-  (typeof prop.value !== "number") ||
-  (
-    prop.type === PROPERTY_TYPE_ATTRIBUTE &&
-    prop.key === "class" &&
-    prop.hoist === true
-  )
-);

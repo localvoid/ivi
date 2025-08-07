@@ -16,7 +16,7 @@ import {
 } from "./ir.js";
 import {
   type SNode, SNodeFlags,
-  normalizeTemplate, createSNode, isStaticProperty,
+  createSNode,
 } from "./shared.js";
 
 export interface TemplateCompilationArtifact {
@@ -66,9 +66,8 @@ export type TemplateNode =
   ;
 
 export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
-  const children = normalizeTemplate(tpl.children);
   return {
-    roots: children.map((node) => compileTemplateNode(node, tpl.type)),
+    roots: tpl.children.map((node) => compileTemplateNode(node, tpl.type)),
   };
 };
 
@@ -188,9 +187,7 @@ const _createExprMap = (
     const prop = properties[i];
     const value = prop.value;
     if (typeof value === "number") {
-      if (!isStaticProperty(prop)) {
-        exprMap.set(value, exprMap.size);
-      }
+      exprMap.set(value, exprMap.size);
     }
   }
 
@@ -237,13 +234,9 @@ const _emitStaticTemplate = (
           }
         }
       } else {
-        if (typeof value === "number") {
-          if (key === "class" && prop.hoist === true) {
-            staticTemplate.push(` class="`, value, `"`);
-          }
-        } else if (value === true) {
+        if (value === true) {
           staticTemplate.push(` ${key}`);
-        } else {
+        } else if (typeof value === "string") {
           staticTemplate.push(` ${key}="${value}"`);
         }
       }

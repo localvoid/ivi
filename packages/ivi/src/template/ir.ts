@@ -39,7 +39,6 @@ export interface IPropertyAttribute {
   readonly type: typeof PROPERTY_TYPE_ATTRIBUTE;
   readonly key: string;
   readonly value: string | boolean | number;
-  readonly hoist: boolean;
 }
 
 export interface IPropertyValue {
