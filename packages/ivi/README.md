@@ -15,6 +15,7 @@ ivi is a lightweight embeddable declarative Web UI library.
 - [Vite](#vite) / [Rollup](#rollup) plugins.
 - [Precompiled](#template-optimizations) templates optimized for size and
 performance.
+- Blazingly fast template compiler that is written in Rust and uses [oxc](https://oxc.rs/) library for javascript parsing.
 - [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler).
 
@@ -135,10 +136,22 @@ ivi templates will work without any precompilation, but it is highly recommended
 ```ts
 // vite.config.mjs
 import { defineConfig } from "vite";
+import { oveo } from "@oveo/vite";
 import { ivi } from "@ivi/vite-plugin";
 
 export default defineConfig({
-  plugins: [ivi()],
+  plugins: [
+    ivi({
+      oveo: true,
+    }),
+    oveo({
+      hoist: true,
+      dedupe: true,
+      externs: {
+        import: ["ivi/oveo.json"],
+      },
+    }),
+  ],
 });
 ```
 
@@ -148,6 +161,7 @@ export default defineConfig({
 
 ```js
 // rollup.config.mjs
+import { oveo } from "@oveo/vite";
 import { ivi } from "@ivi/rollup-plugin";
 
 export default {
@@ -155,7 +169,18 @@ export default {
   output: {
     file: "bundle.js",
   },
-  plugins: [ivi()]
+  plugins: [
+    ivi({
+      oveo: true,
+    }),
+    oveo({
+      hoist: true,
+      dedupe: true,
+      externs: {
+        import: ["ivi/oveo.json"],
+      },
+    }),
+  ],
 };
 ```
 
@@ -825,16 +850,16 @@ function useEffect<P>(
 
 Returns a side effect function that should be invoked in a render function.
 
-#### **`useLayoutEffect()`**
+#### **`useAnimationFrameEffect()`**
 
-`useLayoutEffect` creates a side effect that is executed before [animation frame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
+`useAnimationFrameEffect` creates a side effect that is executed before [animation frame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 ```ts
-function useLayoutEffect(
+function useAnimationFrameEffect(
   component: Component,
   effect: () => (() => void) | void,
 ): () => void;
-function useLayoutEffect<P>(
+function useAnimationFrameEffect<P>(
   component: Component,
   effect: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean
@@ -1212,30 +1237,9 @@ const App = component((c) => {
 update(root, App());
 ```
 
-### Template Cloning
-
-Template cloning is an optimization that is used for cloning HTML templates
-with a [`Node.cloneNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode) method.
-
-By default, template cloning is enabled for all templates. But sometimes it would be wasteful to create a template for cloning and instantiate from it when this template is rendered just once.
-
-To disable cloning, template should have a leading comment `/* preventClone */`. E.g.
-
-```js
-const Example = () => /* preventClone */html`
-  <div class="Title">${text}</div>
-`;
-```
-
-Templates with just one element that doesn't have any static properties will be created with [`document.createElement()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
-
-```js
-html`<div attr=${0}>${1}</div>`;
-```
-
 ### Event Handlers Hoisting
 
-By default, event handlers (arrow function expressions) are automatically hoisted to the outermost scope.
+When oveo optimizations are enabled, event handlers are automatically hoisted to the outermost scope.
 
 ```js
 const Example = component((c) => {
@@ -1260,19 +1264,17 @@ const Example = component((c) => {
 });
 ```
 
-To disable event handlers hoisting, template should have a leading comment `/* preventHoist */`. E.g.
+To disable event handlers hoisting, it should be wrapped in parenthesis. E.g.
 
 ```js
 const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
 
-  return () => /* preventHoist */html`
-    <div @click=${() => { setCount(count() + 1); }}>${count()}</div>
+  return () => html`
+    <div @click=${(() => { setCount(count() + 1); })}>${count()}</div>
   `;
 });
 ```
-
-*Multiple annotations can be declared by separating them with `|` operator, e.g. `/* preventClone | preventHoist */`*
 
 ### Internal Data Structures
 
@@ -1428,7 +1430,7 @@ Gets compiled into:
 const _tpl_1 = _T(
   // _h() creates a template factory that uses Node.cloneNode(true) to
   // instantiate static template structure.
-  _h("<div><span></span></div>"),
+  _hN("<div><span></span></div>"),
   // SMI (Small Integer) value that packs several values:
   // struct Data {
   //   stateSize:6;    // The number of state slots
@@ -1621,8 +1623,7 @@ ivi runtime doesn't depend on any external libraries.
 
 ivi dev tools has a minimal set of dependencies:
 
-- [TypeScript](https://github.com/microsoft/TypeScript/) library is used for template precompilation.
-- [`@rollup/pluginutils`](https://github.com/rollup/plugins) is used in a rollup plugin `@ivi/rollup-plugin` to filter out modules.
+- [`@rollup/pluginutils`](https://github.com/rollup/plugins) is used in Vite and Rollup plugins to filter out modules.
 
 ## License
 
