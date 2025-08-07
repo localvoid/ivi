@@ -11,7 +11,8 @@ export {
   // Components
   type ComponentFactory, type Effect,
   component, getProps, invalidate,
-  useUnmount, useEffect, useAnimationFrameEffect, useIdleEffect,
+  useUnmount, useEffect,
+  createEffectHandler, useAnimationFrameEffect, useIdleEffect,
   type VContext,
   context,
   // Dynamic List

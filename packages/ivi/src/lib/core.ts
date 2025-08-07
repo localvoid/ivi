@@ -1623,13 +1623,13 @@ export const useEffect: Effect = <P>(
   };
 };
 
-let _layoutEffects: (() => void)[] = [];
+let _animationFrameEffects: (() => void)[] = [];
 let _idleEffects: (() => void)[] = [];
 
 const _flushAnimationFrameEffects = () => {
-  while (_layoutEffects.length > 0) {
-    const e = _layoutEffects;
-    _layoutEffects = [];
+  while (_animationFrameEffects.length > 0) {
+    const e = _animationFrameEffects;
+    _animationFrameEffects = [];
     for (let i = 0; i < e.length; i++) {
       e[i]();
     }
@@ -1646,7 +1646,7 @@ const _flushIdleEffects = () => {
   }
 };
 
-export const useAnimationFrameEffect: Effect = <P>(
+export const createEffectHandler = (scheduleFlushTask: () => Array<() => void>) => <P>(
   component: Component,
   hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
@@ -1672,11 +1672,7 @@ export const useAnimationFrameEffect: Effect = <P>(
         });
       }
       pending = true;
-      const queue = _layoutEffects;
-      if (queue.length === 0) {
-        _requestAnimationFrame(_flushAnimationFrameEffects);
-      }
-      queue.push(() => {
+      scheduleFlushTask().push(() => {
         if (pending === true) {
           pending = false;
           if (reset !== void 0) {
@@ -1690,49 +1686,23 @@ export const useAnimationFrameEffect: Effect = <P>(
   };
 };
 
-export const useIdleEffect: Effect = <P>(
-  component: Component,
-  hook: (props?: P) => (() => void) | void,
-  areEqual?: (prev: P, next: P) => boolean,
-): (props?: P) => void => {
-  // var usage is intentional, see `docs/internals/perf.md` for an explanation.
-  var reset: (() => void) | void;
-  var prev: P | undefined;
-  var pending: boolean | undefined;
-  return (next?: P) => {
-    if (
-      pending !== true && (
-        areEqual === void 0 ||
-        prev === void 0 ||
-        areEqual(prev as P, next as P) === false
-      )
-    ) {
-      if (pending === void 0) {
-        useUnmount(component, () => {
-          pending = false;
-          if (reset !== void 0) {
-            reset();
-          }
-        });
-      }
-      pending = true;
-      const queue = _idleEffects;
-      if (queue.length === 0) {
-        _requestIdleCallback(_flushIdleEffects);
-      }
-      queue.push(() => {
-        if (pending === true) {
-          pending = false;
-          if (reset !== void 0) {
-            reset();
-          }
-          reset = hook(next!);
-        }
-      });
-    }
-    prev = next;
-  };
+const _scheduleAnimationFrameEffects = () => {
+  const queue = _animationFrameEffects;
+  if (queue.length === 0) {
+    _requestAnimationFrame(_flushAnimationFrameEffects);
+  }
+  return queue;
 };
+export const useAnimationFrameEffect = createEffectHandler(_scheduleAnimationFrameEffects);
+
+const _scheduleIdleEffects = () => {
+  const queue = _idleEffects;
+  if (queue.length === 0) {
+    _requestIdleCallback(_flushIdleEffects);
+  }
+  return queue;
+};
+export const useIdleEffect = createEffectHandler(_scheduleIdleEffects);
 
 /**
  * Invalidates a component.
