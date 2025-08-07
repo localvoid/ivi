@@ -14,7 +14,8 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@ivi/rollup-plugin": "workspace:*"
+    "@ivi/compiler": "workspace:^",
+    "@rollup/pluginutils": "^5.2.0"
   },
   "scripts": {
     "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"

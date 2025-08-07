@@ -1,1 +1,73 @@
-export * from "@ivi/rollup-plugin";
+import type { Plugin } from "rollup";
+import { createFilter, type FilterPattern } from "@rollup/pluginutils";
+import { TemplateCompiler, type CompilerOptions } from "@ivi/compiler";
+
+export interface IviOptions extends CompilerOptions {
+  include?: FilterPattern | undefined;
+  exclude?: FilterPattern | undefined;
+}
+
+export function ivi(options?: IviOptions): Plugin & { config(options: any, env: { mode: string; command: string; }): void; } {
+  const filter = createFilter(
+    options?.include ?? /\.(m?js|m?ts)$/,
+    options?.exclude,
+  );
+
+  let compiler!: TemplateCompiler;
+  return {
+    name: "ivi",
+
+    config(_options, { command }) {
+      let dedupeStrings = options?.dedupeStrings ?? true;
+      let oveo = options?.oveo ?? true;
+      if (command !== "build") {
+        dedupeStrings = false;
+        oveo = false;
+      }
+      compiler = new TemplateCompiler({
+        dedupeStrings,
+        oveo,
+      });
+    },
+
+    buildStart() {
+      compiler.reset();
+    },
+
+    async transform(code: string, id: string) {
+      if (
+        !filter(id) &&
+        // Fast-path for modules that doesn't contain any ivi code.
+        !code.includes("ivi")
+      ) {
+        return null;
+      }
+
+      try {
+        const result = await compiler.compileModule(code);
+        const map = result.map;
+        code = result.code;
+        return map ? { code, map } : { code };
+      } catch (err) {
+        this.error(`Failed to transform: ${err}`);
+      }
+    },
+
+
+    async renderChunk(code, _chunk) {
+      // Fast-path for chunks that doesn't have any ivi code.
+      if (!code.includes("IVI")) {
+        return;
+      }
+
+      try {
+        const result = await compiler.compileChunk(code);
+        const map = result.map;
+        code = result.code;
+        return map ? { code, map } : { code };
+      } catch (err) {
+        this.error(`Failed to render chunk: ${err}`);
+      }
+    },
+  };
+}
