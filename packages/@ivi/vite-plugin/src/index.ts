@@ -19,7 +19,7 @@ export function ivi(options?: IviOptions): Plugin & { config(options: any, env: 
 
     config(_options, { command }) {
       let dedupeStrings = options?.dedupeStrings ?? true;
-      let oveo = options?.oveo ?? true;
+      let oveo = options?.oveo ?? false;
       if (command !== "build") {
         dedupeStrings = false;
         oveo = false;
