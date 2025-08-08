@@ -30,7 +30,7 @@ export function ivi(options?: IviOptions): Plugin {
       }
 
       try {
-        const result = await compiler.compileModule(code, "tsx");
+        const result = await compiler.transform(code, "tsx");
         const map = result.map;
         code = result.code;
         return map ? { code, map } : { code };
@@ -50,7 +50,7 @@ export function ivi(options?: IviOptions): Plugin {
       }
 
       try {
-        const result = await compiler.compileChunk(code);
+        const result = await compiler.renderChunk(code);
         const map = result.map;
         code = result.code;
         return map ? { code, map } : { code };

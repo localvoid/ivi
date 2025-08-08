@@ -13,7 +13,7 @@ for (const entry of entries) {
     test(`compiler/module/${entry}`, async () => {
       const compiler = new TemplateCompiler({ oveo: true, dedupeStrings: true });
       const output = Bun.file(path.join(units, entry, "output.js"));
-      const moduleResult = await compiler.compileModule(input, "js");
+      const moduleResult = await compiler.transform(input, "js");
       expect(normalizeNewlines(moduleResult.code)).toBe(normalizeNewlines(await output.text()));
     });
   } catch (err) {

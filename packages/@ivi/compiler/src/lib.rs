@@ -51,12 +51,8 @@ impl TemplateCompiler {
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
-    pub fn compile_module(
-        &self,
-        source_text: String,
-        module_type: String,
-    ) -> AsyncTask<CompileModuleTask> {
-        AsyncTask::new(CompileModuleTask {
+    pub fn transform(&self, source_text: String, module_type: String) -> AsyncTask<TransformTask> {
+        AsyncTask::new(TransformTask {
             compiler: self.inner.clone(),
             source_text,
             module_type,
@@ -78,19 +74,19 @@ impl TemplateCompiler {
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
-    pub fn compile_chunk(&self, source_text: String) -> AsyncTask<CompileChunkTask> {
-        AsyncTask::new(CompileChunkTask { compiler: self.inner.clone(), source_text })
+    pub fn render_chunk(&self, source_text: String) -> AsyncTask<RenderChunkTask> {
+        AsyncTask::new(RenderChunkTask { compiler: self.inner.clone(), source_text })
     }
 }
 
-pub struct CompileModuleTask {
+pub struct TransformTask {
     compiler: Arc<CompilerState>,
     source_text: String,
     module_type: String,
     dedupe_strings: bool,
 }
 
-impl Task for CompileModuleTask {
+impl Task for TransformTask {
     type Output = CompilerOutput;
     type JsValue = CompilerOutput;
 
@@ -118,12 +114,12 @@ impl Task for CompileModuleTask {
     }
 }
 
-pub struct CompileChunkTask {
+pub struct RenderChunkTask {
     compiler: Arc<CompilerState>,
     source_text: String,
 }
 
-impl Task for CompileChunkTask {
+impl Task for RenderChunkTask {
     type Output = CompilerOutput;
     type JsValue = CompilerOutput;
 

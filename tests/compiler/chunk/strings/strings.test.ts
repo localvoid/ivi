@@ -14,9 +14,9 @@ for (const entry of entries) {
     test(`compiler/chunk/strings/${entry}`, async () => {
       const compiler = new TemplateCompiler({ oveo: true, dedupeStrings: true });
       const output = Bun.file(path.join(units, entry, "output.js"));
-      const moduleResult = await compiler.compileModule(input, "js");
+      const moduleResult = await compiler.transform(input, "js");
       compiler.renderStart();
-      const chunkResult = await compiler.compileChunk(moduleResult.code);
+      const chunkResult = await compiler.renderChunk(moduleResult.code);
       expect(normalizeNewlines(chunkResult.code)).toBe(normalizeNewlines(await output.text()));
     });
   } catch (err) {

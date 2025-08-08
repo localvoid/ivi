@@ -7,9 +7,9 @@ export declare class CompilerOutput {
 
 export declare class TemplateCompiler {
   constructor(options?: CompilerOptions | undefined | null)
-  compileModule(sourceText: string, moduleType: string): Promise<CompilerOutput>
+  transform(sourceText: string, moduleType: string): Promise<CompilerOutput>
   renderStart(): void
-  compileChunk(sourceText: string): Promise<CompilerOutput>
+  renderChunk(sourceText: string): Promise<CompilerOutput>
 }
 
 export interface CompilerOptions {
