@@ -21,3 +21,6 @@ ivi_compiler.workspace = true
 
 [build-dependencies]
 napi-build.workspace = true
+
+[lints]
+workspace = true

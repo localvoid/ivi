@@ -53,7 +53,7 @@ impl TemplateCompiler {
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
     pub fn transform(&self, source_text: String, module_type: String) -> AsyncTask<TransformTask> {
         AsyncTask::new(TransformTask {
-            compiler: self.inner.clone(),
+            compiler: Arc::clone(&self.inner),
             source_text,
             module_type,
             dedupe_strings: self.inner.options.dedupe_strings,
@@ -75,7 +75,7 @@ impl TemplateCompiler {
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
     pub fn render_chunk(&self, source_text: String) -> AsyncTask<RenderChunkTask> {
-        AsyncTask::new(RenderChunkTask { compiler: self.inner.clone(), source_text })
+        AsyncTask::new(RenderChunkTask { compiler: Arc::clone(&self.inner), source_text })
     }
 }
 

@@ -688,10 +688,10 @@ fn is_hoistable_expr<'a>(expr: &Expression<'a>, scoping: &Scoping) -> bool {
     match expr {
         Expression::Identifier(id) => {
             let r = scoping.get_reference(id.reference_id());
-            if let Some(symbol_id) = r.symbol_id() {
-                if scoping.symbol_scope_id(symbol_id) == scoping.root_scope_id() {
-                    return true;
-                }
+            if let Some(symbol_id) = r.symbol_id()
+                && scoping.symbol_scope_id(symbol_id) == scoping.root_scope_id()
+            {
+                return true;
             }
         }
         Expression::StaticMemberExpression(expr) => {
