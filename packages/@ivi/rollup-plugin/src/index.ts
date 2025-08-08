@@ -34,7 +34,7 @@ export function ivi(options?: IviOptions): Plugin {
       }
 
       try {
-        const result = await compiler.compileModule(code);
+        const result = await compiler.compileModule(code, "tsx");
         const map = result.map;
         code = result.code;
         return map ? { code, map } : { code };

@@ -68,10 +68,15 @@ impl TemplateCompiler {
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
-    pub fn compile_module(&self, source_text: String) -> AsyncTask<CompileModuleTask> {
+    pub fn compile_module(
+        &self,
+        source_text: String,
+        module_type: String,
+    ) -> AsyncTask<CompileModuleTask> {
         AsyncTask::new(CompileModuleTask {
             compiler: self.inner.clone(),
             source_text,
+            module_type,
             dedupe_strings: self.inner.options.dedupe_strings,
         })
     }
@@ -85,6 +90,7 @@ impl TemplateCompiler {
 pub struct CompileModuleTask {
     compiler: Arc<CompilerState>,
     source_text: String,
+    module_type: String,
     dedupe_strings: bool,
 }
 
@@ -94,9 +100,14 @@ impl Task for CompileModuleTask {
 
     fn compute(&mut self) -> Result<Self::Output> {
         let mut strings = FxHashSet::default();
-        let result = compile_module(&self.source_text, &self.compiler.options, &mut strings)
-            .map(|v| CompilerOutput { code: v.code, map: v.map })
-            .map_err(|err| Error::from_reason(err.to_string()))?;
+        let result = compile_module(
+            &self.source_text,
+            &self.module_type,
+            &self.compiler.options,
+            &mut strings,
+        )
+        .map(|v| CompilerOutput { code: v.code, map: v.map })
+        .map_err(|err| Error::from_reason(err.to_string()))?;
 
         if self.dedupe_strings && !strings.is_empty() {
             let mut unique = self.compiler.unique_strings.lock().unwrap();

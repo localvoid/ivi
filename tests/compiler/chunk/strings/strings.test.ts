@@ -17,7 +17,7 @@ for (const entry of entries) {
 
     test(`compiler/chunk/strings/${entry}`, async () => {
       const output = Bun.file(path.join(units, entry, "output.js"));
-      const moduleResult = await compiler.compileModule(input);
+      const moduleResult = await compiler.compileModule(input, "js");
       const chunkResult = await compiler.compileChunk(moduleResult.code);
       expect(normalizeNewlines(chunkResult.code)).toBe(normalizeNewlines(await output.text()));
     });
