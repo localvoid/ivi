@@ -3,10 +3,7 @@ use napi::{Env, bindgen_prelude::*};
 use napi_derive::napi;
 use rustc_hash::{FxHashMap, FxHashSet};
 
-use std::sync::{
-    Arc, Mutex, RwLock,
-    atomic::{AtomicBool, Ordering},
-};
+use std::sync::{Arc, Mutex, RwLock};
 
 #[napi]
 pub struct CompilerOutput {
@@ -29,7 +26,6 @@ struct CompilerState {
     options: ivi_compiler::CompilerOptions,
     unique_strings: Mutex<FxHashSet<String>>,
     indexed_strings: RwLock<FxHashMap<String, u8>>,
-    dirty_strings: AtomicBool,
 }
 
 #[napi]
@@ -50,21 +46,8 @@ impl TemplateCompiler {
                 options,
                 unique_strings: Mutex::default(),
                 indexed_strings: RwLock::default(),
-                dirty_strings: AtomicBool::new(false),
             }),
         })
-    }
-
-    #[napi]
-    pub fn reset(&mut self) {
-        {
-            let mut strings = self.inner.unique_strings.lock().unwrap();
-            strings.clear();
-        }
-        {
-            let mut indexed_strings = self.inner.indexed_strings.write().unwrap();
-            indexed_strings.clear();
-        }
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
@@ -79,6 +62,19 @@ impl TemplateCompiler {
             module_type,
             dedupe_strings: self.inner.options.dedupe_strings,
         })
+    }
+
+    #[napi]
+    pub fn render_start(&self) {
+        let unique_lock = self.inner.unique_strings.lock().unwrap();
+        let mut unique: Vec<_> = unique_lock.iter().collect();
+        unique.sort();
+        let mut strings = self.inner.indexed_strings.write().unwrap();
+        strings.clear();
+        for (i, s) in unique.iter().enumerate() {
+            strings.insert(s.to_string(), i as u8);
+        }
+        unique.clear();
     }
 
     #[napi(ts_return_type = "Promise<CompilerOutput>")]
@@ -112,7 +108,6 @@ impl Task for CompileModuleTask {
         if self.dedupe_strings && !strings.is_empty() {
             let mut unique = self.compiler.unique_strings.lock().unwrap();
             unique.extend(strings.drain());
-            self.compiler.dirty_strings.store(true, Ordering::SeqCst);
         }
 
         Ok(result)
@@ -133,18 +128,6 @@ impl Task for CompileChunkTask {
     type JsValue = CompilerOutput;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        // Sort strings
-        while self.compiler.dirty_strings.load(Ordering::SeqCst) {
-            let unique_lock = self.compiler.unique_strings.lock().unwrap();
-            let mut unique: Vec<_> = unique_lock.iter().collect();
-            unique.sort();
-            let mut strings = self.compiler.indexed_strings.write().unwrap();
-            for (i, s) in unique.iter().enumerate() {
-                strings.insert(s.to_string(), i as u8);
-            }
-
-            self.compiler.dirty_strings.store(false, Ordering::SeqCst);
-        }
         let strings = self.compiler.indexed_strings.read().unwrap();
 
         compile_chunk(&self.source_text, &strings)

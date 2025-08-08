@@ -7,8 +7,8 @@ export declare class CompilerOutput {
 
 export declare class TemplateCompiler {
   constructor(options?: CompilerOptions | undefined | null)
-  reset(): void
   compileModule(sourceText: string, moduleType: string): Promise<CompilerOutput>
+  renderStart(): void
   compileChunk(sourceText: string): Promise<CompilerOutput>
 }
 

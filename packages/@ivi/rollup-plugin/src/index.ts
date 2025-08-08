@@ -20,10 +20,6 @@ export function ivi(options?: IviOptions): Plugin {
   return {
     name: "ivi",
 
-    buildStart() {
-      compiler.reset();
-    },
-
     async transform(code: string, id: string) {
       if (
         !filter(id) &&
@@ -43,6 +39,9 @@ export function ivi(options?: IviOptions): Plugin {
       }
     },
 
+    renderStart() {
+      compiler.renderStart();
+    },
 
     async renderChunk(code, _chunk) {
       // Fast-path for chunks that doesn't have any ivi code.
