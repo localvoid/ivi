@@ -1,0 +1,6 @@
+{
+  "extends": "../../../tsconfig.composite.json",
+  "references": [
+    { "path": "../../ivi" },
+  ],
+}

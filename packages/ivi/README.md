@@ -12,7 +12,7 @@ ivi is a lightweight embeddable declarative Web UI library.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
-- [Vite](#vite) / [Rollup](#rollup) plugins.
+- [Vite](#vite), [Rollup](#rollup) plugins and [Rolldown](https://rolldown.rs/).
 - [Precompiled](#template-optimizations) templates optimized for size and
 performance.
 - Blazingly fast template compiler that is written in Rust and uses [oxc](https://oxc.rs/) library for javascript parsing.
@@ -154,6 +154,8 @@ export default defineConfig({
   ],
 });
 ```
+
+> Vite setup with rolldown integration should use the `@ivi/rolldown` plugin.
 
 ### Rollup
 

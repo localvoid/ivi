@@ -1,6 +1,7 @@
 {
   "references": [
     { "path": "packages/ivi" },
+    { "path": "packages/@ivi/rolldown" },
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/vite-plugin" },
     { "path": "packages/@ivi/portal" },
