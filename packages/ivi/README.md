@@ -12,10 +12,10 @@ ivi is a lightweight embeddable declarative Web UI library.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
-- [Vite](#vite), [Rollup](#rollup) plugins and [Rolldown](https://rolldown.rs/).
+- [Vite](#vite), [Rollup](#rollup) and [Rolldown](https://rolldown.rs/) plugins.
 - [Precompiled](#template-optimizations) templates optimized for size and
 performance.
-- Blazingly fast template compiler that is written in Rust and uses [oxc](https://oxc.rs/) library for javascript parsing.
+- Blazingly fast template compiler written in Rust with [oxc](https://oxc.rs/) library for javascript parsing.
 - [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler).
 
@@ -128,6 +128,8 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
 ## Setup
 
 ivi templates will work without any precompilation, but it is highly recommended to use precompilation to improve performance and reduce code size.
+
+Hoist and dedupe optimizations are implemented by the [oveo](https://github.com/localvoid/oveo) javascript optimizer.
 
 ### Vite
 
@@ -1230,9 +1232,10 @@ const App = component((c) => {
     setTheme((theme === "Light") ? "Dark" : "Light");
   };
   return () => html`
-    div
-      div =${theme}
-      button @click=${toggleTheme} 'Toggle Theme'
+    <div>
+      <div>${theme}</div>
+      <button @click=${toggleTheme}>Toggle Theme</button>
+    </div>
   `;
 });
 
@@ -1422,7 +1425,7 @@ To understand why monomorphic call-sites are important for performance, it is re
 Templates are precompiled into a static part that is stored in a `TemplateDescriptor` object and an array of dynamic expressions.
 
 ```js
-const Example = (attr, child) => html`div :attr=${attr} span ${child}`;
+const Example = (attr, child) => html`<div attr=${attr}><span>${child}</span></div>`;
 ```
 
 Gets compiled into:
