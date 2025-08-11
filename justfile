@@ -18,6 +18,7 @@ tsc *FLAGS:
   tsc -b {{FLAGS}}
 
 publish *NPM_FLAGS:
+  just _pkg-publish ./packages/@ivi/rolldown/ {{NPM_FLAGS}}
   just _pkg-publish ./packages/@ivi/rollup-plugin/ {{NPM_FLAGS}}
   just _pkg-publish ./packages/@ivi/vite-plugin/ {{NPM_FLAGS}}
   just _pkg-publish ./packages/ivi/ {{NPM_FLAGS}}
