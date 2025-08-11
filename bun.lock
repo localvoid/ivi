@@ -12,7 +12,7 @@
     },
     "packages/@ivi/compiler": {
       "name": "@ivi/compiler",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "optionalDependencies": {
         "@ivi/compiler-darwin-arm64": "workspace:*",
         "@ivi/compiler-darwin-x64": "workspace:*",
@@ -24,27 +24,27 @@
     },
     "packages/@ivi/compiler/packages/darwin-arm64": {
       "name": "@ivi/compiler-darwin-arm64",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/compiler/packages/darwin-x64": {
       "name": "@ivi/compiler-darwin-x64",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/compiler/packages/linux-arm64-gnu": {
       "name": "@ivi/compiler-linux-arm64-gnu",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/compiler/packages/linux-x64-gnu": {
       "name": "@ivi/compiler-linux-x64-gnu",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/compiler/packages/win32-arm64-msvc": {
       "name": "@ivi/compiler-win32-arm64-msvc",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/compiler/packages/win32-x64-msvc": {
       "name": "@ivi/compiler-win32-x64-msvc",
-      "version": "0.1.3",
+      "version": "0.1.4",
     },
     "packages/@ivi/identity": {
       "name": "@ivi/identity",
@@ -79,7 +79,7 @@
     },
     "packages/@ivi/rollup-plugin": {
       "name": "@ivi/rollup-plugin",
-      "version": "5.0.0",
+      "version": "5.0.1",
       "dependencies": {
         "@ivi/compiler": "workspace:^",
         "@rollup/pluginutils": "^5.2.0",
@@ -87,7 +87,7 @@
     },
     "packages/@ivi/vite-plugin": {
       "name": "@ivi/vite-plugin",
-      "version": "5.0.0",
+      "version": "5.0.1",
       "dependencies": {
         "@ivi/compiler": "workspace:^",
         "@rollup/pluginutils": "^5.2.0",
