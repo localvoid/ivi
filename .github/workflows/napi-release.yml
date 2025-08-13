@@ -1,0 +1,33 @@
+name: NAPI Release
+permissions:
+  contents: write
+  id-token: write
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        type: choice
+        required: true
+        description: Increment version
+        options: 
+        - patch
+        - minor
+        - major
+jobs:
+  publish:
+    name: Release new @ivi/compiler version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+      - uses: extractions/setup-just@v3
+      - name: Increment versions and push changes
+        run: |
+          just napi increment-versions ${{ github.event.inputs.increment }}
+          git config --global user.name "GitHub Action"
+          git config --global user.email "username@users.noreply.github.com"
+          git commit -a -m "publish: @ivi/compiler $(jq -r .version ./packages/@ivi/compiler/package.json)"
+          git push
