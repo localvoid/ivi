@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler-linux-x64-gnu",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "cpu": [
     "x64"
   ],
