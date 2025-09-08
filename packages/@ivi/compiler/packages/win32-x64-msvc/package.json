@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler-win32-x64-msvc",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "cpu": [
     "x64"
   ],
