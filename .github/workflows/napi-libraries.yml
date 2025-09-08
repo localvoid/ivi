@@ -67,7 +67,7 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - uses: oven-sh/setup-bun@v2
@@ -118,7 +118,7 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           architecture: ${{ matrix.settings.architecture }}
@@ -143,7 +143,7 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - uses: oven-sh/setup-bun@v2
