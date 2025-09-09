@@ -53,10 +53,14 @@ export class TemplateParser extends TemplateScanner {
               children.push(SPACE_TEXT_NODE);
             }
           }
-          if (this.peekCharCode(1) === CharCode.Slash) {
+          const c1 = this.peekCharCode(1);
+          if (c1 === CharCode.Slash) {
             break;
+          } else if (c1 === CharCode.ExclamationMark) {
+            this.parseComment();
+          } else {
+            children.push(this.parseElement());
           }
-          children.push(this.parseElement());
         } else {
           children.push({
             type: NODE_TYPE_TEXT,
@@ -86,6 +90,23 @@ export class TemplateParser extends TemplateScanner {
       whitespaceState = this.whitespace();
     }
     return children;
+  }
+
+  parseComment(): void {
+    if (!this.charCode(CharCode.LessThan)) {
+      throw new TemplateParserError("Expected a '<' character.", this.e, this.i);
+    }
+    if (!this.charCode(CharCode.ExclamationMark)) {
+      throw new TemplateParserError("Expected a '!' character.", this.e, this.i);
+    }
+    const text = this.text;
+    let i = this.i;
+    while (i < text.length) {
+      if (text.charCodeAt(i++) === CharCode.MoreThan) {
+        break;
+      }
+    }
+    this.i = i;
   }
 
   parseElement(): INodeElement {

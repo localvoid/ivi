@@ -866,4 +866,29 @@ describe("@ivi/htm/parser", () => {
       },
     );
   });
+
+  test(`comments`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `
+          <div>
+            <!-- comment -->
+            a
+            <!>
+          </div>
+        `,
+        ],
+        TEMPLATE_TYPE_HTM,
+      ),
+      {
+        type: TEMPLATE_TYPE_HTM,
+        children: [
+          E("div", _, [
+            T("a"),
+          ]),
+        ],
+      },
+    );
+  });
 });

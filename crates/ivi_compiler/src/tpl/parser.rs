@@ -346,10 +346,17 @@ impl<'a> Parser<'a> {
                     if whitespace_state.should_insert_whitespace() {
                         children.push(TNode::space_text());
                     }
-                    if let Some('/') = self.peek_nth_char(1) {
-                        break;
+                    match self.peek_nth_char(1) {
+                        Some('/') => {
+                            break;
+                        }
+                        Some('!') => {
+                            self.parse_comment();
+                        }
+                        _ => {
+                            children.push(TNode::new(TNodeKind::Element(self.parse_element()?)));
+                        }
                     }
-                    children.push(TNode::new(TNodeKind::Element(self.parse_element()?)));
                 } else {
                     children.push(TNode::new(TNodeKind::Text(self.parse_text(whitespace_state)?)));
                 }
@@ -364,6 +371,19 @@ impl<'a> Parser<'a> {
             whitespace_state = self.consume_whitespace();
         }
         Ok(children)
+    }
+
+    fn parse_comment(&mut self) {
+        let mut len = self.text.len();
+        for (i, c) in self.text.char_indices() {
+            if c == '>' {
+                len = i + 1;
+                break;
+            }
+        }
+        if len > 0 {
+            self.advance(len);
+        }
     }
 
     fn parse_element(&mut self) -> Result<TElement, OxcDiagnostic> {
