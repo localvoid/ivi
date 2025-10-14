@@ -1,0 +1,8 @@
+{
+  "name": "tests",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ivi/compiler": "workspace:^"
+  }
+}

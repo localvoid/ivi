@@ -12,7 +12,7 @@
     },
     "packages/@ivi/compiler": {
       "name": "@ivi/compiler",
-      "version": "0.1.4",
+      "version": "0.1.9",
       "optionalDependencies": {
         "@ivi/compiler-darwin-arm64": "workspace:*",
         "@ivi/compiler-darwin-x64": "workspace:*",
@@ -24,27 +24,27 @@
     },
     "packages/@ivi/compiler/packages/darwin-arm64": {
       "name": "@ivi/compiler-darwin-arm64",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/compiler/packages/darwin-x64": {
       "name": "@ivi/compiler-darwin-x64",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/compiler/packages/linux-arm64-gnu": {
       "name": "@ivi/compiler-linux-arm64-gnu",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/compiler/packages/linux-x64-gnu": {
       "name": "@ivi/compiler-linux-x64-gnu",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/compiler/packages/win32-arm64-msvc": {
       "name": "@ivi/compiler-win32-arm64-msvc",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/compiler/packages/win32-x64-msvc": {
       "name": "@ivi/compiler-win32-x64-msvc",
-      "version": "0.1.4",
+      "version": "0.1.9",
     },
     "packages/@ivi/identity": {
       "name": "@ivi/identity",
@@ -95,7 +95,13 @@
     },
     "packages/ivi": {
       "name": "ivi",
-      "version": "5.0.1",
+      "version": "5.1.0",
+    },
+    "tests": {
+      "name": "tests",
+      "dependencies": {
+        "@ivi/compiler": "workspace:^",
+      },
     },
   },
   "packages": {
@@ -456,6 +462,8 @@
     "string-width": ["string-width@4.2.3", "", { "dependencies": { "emoji-regex": "^8.0.0", "is-fullwidth-code-point": "^3.0.0", "strip-ansi": "^6.0.1" } }, "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g=="],
 
     "strip-ansi": ["strip-ansi@6.0.1", "", { "dependencies": { "ansi-regex": "^5.0.1" } }, "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="],
+
+    "tests": ["tests@workspace:tests"],
 
     "tmp": ["tmp@0.0.33", "", { "dependencies": { "os-tmpdir": "~1.0.2" } }, "sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw=="],
 

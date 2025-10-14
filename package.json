@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/@ivi/*",
     "packages/@ivi/compiler/packages/*",
-    "packages/ivi"
+    "packages/ivi",
+    "tests"
   ],
   "scripts": {
     "clean": "rm -rf ./node_modules ./tsconfig.tsbuildinfo",
