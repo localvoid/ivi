@@ -82,7 +82,7 @@ jobs:
           key: NAPI-${{ matrix.settings.target }}-${{ matrix.settings.host }}
       - run: just init
       - run: ${{ matrix.settings.build }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: NAPI-${{ matrix.settings.target }}
           path: ./packages/@ivi/compiler/ivi-compiler.*.node
@@ -130,7 +130,7 @@ jobs:
           key: ${{ matrix.settings.target }}-${{ matrix.settings.host }}
       - run: just init
         if: steps.cache.outputs.cache-hit != 'true'
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: NAPI-${{ matrix.settings.target }}
           path: ./packages/@ivi/compiler/
@@ -154,7 +154,7 @@ jobs:
           key: NAPI-x86_64-unknown-linux-gnu-ubuntu-latest
       - run: just init
         if: steps.cache.outputs.cache-hit != 'true'
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           pattern: NAPI-*
           path: napi-artifacts
