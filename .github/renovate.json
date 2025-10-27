@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "group:allNonMajor",
     "npm:unpublishSafe",
     ":semanticCommits"
   ],
@@ -12,5 +11,30 @@
   ],
   "labels": [
     "dependencies"
+  ],
+  "commitMessagePrefix": "chore: ",
+  "commitMessageAction": "bump up",
+  "commitMessageTopic": "{{depName}} version",
+  "ignoreDeps": [],
+  "packageRules": [
+    {
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "matchPackageNames": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "groupName": "all devDependencies",
+      "groupSlug": "all-dev-dependencies",
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "rangeStrategy": "bump"
+    }
   ]
 }
