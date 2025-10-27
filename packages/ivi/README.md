@@ -13,8 +13,7 @@ ivi is a lightweight embeddable declarative Web UI library.
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
 - [Vite](#vite), [Rollup](#rollup) and [Rolldown](https://rolldown.rs/) plugins.
-- [Precompiled](#template-optimizations) templates optimized for size and
-performance.
+- [Precompiled](#template-optimizations) templates optimized for size and performance.
 - Blazingly fast template compiler written in Rust with [oxc](https://oxc.rs/) library for javascript parsing.
 - [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler).
@@ -26,7 +25,9 @@ import { createRoot, update, component, useState, html } from "ivi";
 
 const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
-  const inc = () => { setCount(count() + 1); };
+  const inc = () => {
+    setCount(count() + 1);
+  };
 
   return () => html`
     <div class="app">
@@ -90,7 +91,7 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
     - [`useReducer(component, value, reducer)`](#usereducer)
   - [Side Effects](#side-effects)
     - [`useEffect(component, effect, areEqual)`](#useeffect)
-    - [`useLayoutEffect(component, effect, areEqual)`](#uselayouteffect)
+    - [`useAnimationFrameEffect(component, effect, areEqual)`](#useanimationframeeffect)
     - [`useIdleEffect(component, effect, areEqual)`](#useidleeffect)
   - [List](#list)
     - [`List(entries, getKey, render)`](#list-1)
@@ -116,7 +117,6 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
   - [Right-to-Left Updates](#right-to-left-updates)
   - [Template Call-Site Unique Identity](#template-call-site-unique-identity)
   - [Forcing Component Updates](#forcing-component-updates)
-  - [Template Cloning](#template-cloning)
   - [Event Handlers Hoisting](#event-handlers-hoisting)
   - [Internal Data Structures](#internal-data-structures)
     - [UI Tree](#ui-tree-data-structures)
@@ -215,10 +215,9 @@ Templates can have multiple root nodes.
 ```js
 html`
   <div></div>
-  ${expr}
-  text
+  ${expr} text
   <div></div>
-`
+`;
 ```
 
 ### Childless Elements
@@ -226,11 +225,7 @@ html`
 Childless elements can be self closed with a `/>` syntax.
 
 ```js
-html`
-  <div
-    class="a"
-  />
-`;
+html` <div class="a" /> `;
 ```
 
 ### Whitespace Rules
@@ -246,17 +241,21 @@ html`
 ```
 
 ```htm
-<div><p></p>ab<p></p></div>
+<div>
+  <p></p>
+  ab
+  <p></p>
+</div>
 ```
 
 2. Inline whitespaces are collapsed into one whitespace:
 
 ```htm
-<div>  <span>  a  b  </span>  </div>
+<div>  <span>  a  b  </span><  /div>
 ```
 
 ```htm
-<div> <span> a b </span> </div>
+<div><span> a b </span></div>
 ```
 
 3. Whitespaces around newlines in text nodes are collapsed into one whitespace:
@@ -272,14 +271,13 @@ html`
 <div>ab cd</div>
 ```
 
-4. Vertical tab `\v` character prevents from removing all whitespaces around
-newlines:
+4. Vertical tab `\v` character prevents from removing all whitespaces around newlines:
 
 ```htm
 <div>
   <b>1</b>
   \v item left
-<div>
+</div>
 ```
 
 ```htm
@@ -291,10 +289,7 @@ newlines:
 In ivi templates, you can include dynamic content called expressions. An expression is just a piece of JavaScript code that gets evaluated when template is rendered. Whatever value an expression produces at that time will be included in the final rendered template.
 
 ```js
-html`
-<div attr=${attributeValueExpr}>
-  ${childExpr}
-</div>`;
+html` <div attr=${attributeValueExpr}>${childExpr}</div>`;
 ```
 
 ### Element Properties
@@ -366,9 +361,7 @@ Directive is a function that is invoked each time template is updated and
 receives a DOM element associated with a directive:
 
 ```ts
-type ElementDirective = <E extends Element>(
-  element: E,
-) => void;
+type ElementDirective = <E extends Element>(element: E) => void;
 ```
 
 Directive function is invoked only when template is created with a
@@ -422,11 +415,7 @@ This means you can create templates with complex logic that conditionally render
 ```js
 const Example = component((c) => {
   // ...
-  return (show) => html`
-    <div>
-      ${show && html`<span>Show</span>`}
-    </div>
-  `;
+  return (show) => html` <div>${show && html`<span>Show</span>`}</div> `;
 });
 ```
 
@@ -435,14 +424,7 @@ const Example = component((c) => {
 If an expression is used in the child position of an HTML element and it returns an array, ivi will render all of the items in that array as separate nodes.
 
 ```js
-const Example = () => html`
-  <div>
-    ${[
-      "Text Node 1",
-      "Text Node 2",
-    ]}
-  </div>
-`;
+const Example = () => html` <div>${["Text Node 1", "Text Node 2"]}</div> `;
 ```
 
 ivi allows components to return arrays of elements as their root nodes. This means that a component can return multiple top-level elements instead of just one.
@@ -465,10 +447,7 @@ When arrays are updated, stateless tree nodes are mapped onto their stateful nod
 When array contains a conditional expression that returns a "hole" value (`null`, `undefined` or `false`), the hole will occupy a slot in a stateful tree, so that all nodes will be correclty mapped onto their stateful nodes.
 
 ```js
-[
-  conditional ? "text" : null,
-  StatefulComponent(),
-]
+[conditional ? "text" : null, StatefulComponent()];
 ```
 
 In the example above, when `conditional` expression goes from a text to a "hole" and vice versa, `StatefulComponent` will preserve its internal state.
@@ -502,12 +481,12 @@ interface DataEntry {
   text: string;
 }
 const getEntryKey = (entry: DataEntry) => entry.key;
-const EntryView = (entry: DataEntry) => (
-  html`<li>${entry.text}</li>`
-);
+const EntryView = (entry: DataEntry) => html`<li>${entry.text}</li>`;
 
 const ListView = (data: DataEntry[]) => html`
-  <ul>${List(data, getEntryKey, EntryView)}</ul>
+  <ul>
+    ${List(data, getEntryKey, EntryView)}
+  </ul>
 `;
 ```
 
@@ -529,15 +508,10 @@ Stateful components are declared with [`component()`](#component) function. It c
 const Example = component((c) => {
   // When component state is initialized, it should return a render
   // function.
-  return (props) => (
-    html`<div>${props.value}</div>`
-  );
+  return (props) => html`<div>${props.value}</div>`;
 });
 
-update(
-  document.body,
-  Example({ value: "Hello World" }),
-);
+update(document.body, Example({ value: "Hello World" }));
 ```
 
 Stateful components are using JavaScript closures to store internal state.
@@ -581,13 +555,11 @@ const Example = component((c) => {
   };
 
   // Render function.
-  return () => (
-    html`
-    <div>
+  return () =>
+    html` <div>
       <p>Count: ${counter()}</p>
       <button @click=${increment}>Increment</button>
-    </div>`
-  );
+    </div>`;
 });
 ```
 
@@ -596,9 +568,7 @@ const Example = component((c) => {
 Stateless components in ivi are just basic JavaScript functions. They are faster and more lightweight than stateful components, which makes them a good choice for simple and reusable components that doesn't have any internal state.
 
 ```js
-const Button = (text, onClick) => html`
-  <button @click=${onClick}>${text}</button>
-`;
+const Button = (text, onClick) => html` <button @click=${onClick}>${text}</button> `;
 ```
 
 ## API
@@ -615,18 +585,17 @@ type Component<Props> = Opaque<Props>;
 
 ```ts
 type VAny =
-  | null       // Hole
-  | undefined  // Hole
-  | false      // Hole
-  | string     // Text
-  | number     // Text
-  | VRoot      // Root
-  | VTemplate  // Template
+  | null // Hole
+  | undefined // Hole
+  | false // Hole
+  | string // Text
+  | number // Text
+  | VRoot // Root
+  | VTemplate // Template
   | VComponent // Component
-  | VContext   // Context Provider
-  | VList      // Dynamic List with track by key algo
-  | VAny[]     // Dynamic List with track by index algo
-  ;
+  | VContext // Context Provider
+  | VList // Dynamic List with track by key algo
+  | VAny[]; // Dynamic List with track by index algo
 
 type VRoot = Opaque;
 type VTemplate = Opaque;
@@ -644,10 +613,7 @@ A root node is the topmost node in a stateful tree, from which all other nodes a
 `createRoot` creates a root node that uses microtask queue for scheduling updates.
 
 ```ts
-function createRoot(
-  parentElement: Element,
-  nextNode: Node | null = null,
-): Root;
+function createRoot(parentElement: Element, nextNode: Node | null = null): Root;
 ```
 
 - `parentElement` - Parent DOM Element.
@@ -658,10 +624,7 @@ function createRoot(
 `dirtyCheck` performs the dirty checking algorithm in a root subtree and updates all dirty components.
 
 ```ts
-function dirtyCheck(
-  root: Root,
-  forceUpdate: boolean = false,
-): void;
+function dirtyCheck(root: Root, forceUpdate: boolean = false): void;
 ```
 
 - `root` - Root node.
@@ -672,11 +635,7 @@ function dirtyCheck(
 `update` updates a root subtree with a new representation.
 
 ```ts
-function update(
-  root: Root,
-  v: VAny,
-  forceUpdate: boolean = false,
-): void;
+function update(root: Root, v: VAny, forceUpdate: boolean = false): void;
 ```
 
 - `root` - Root node.
@@ -688,10 +647,7 @@ function update(
 `unmount` unmounts a root subtree from the DOM and triggers unmount hooks in components.
 
 ```ts
-function unmount(
-  root: Root,
-  detach: boolean,
-): void;
+function unmount(root: Root, detach: boolean): void;
 ```
 
 - `root` - Root node.
@@ -704,11 +660,11 @@ function unmount(
 ```ts
 function defineRoot(
   onInvalidate: (root: Root<undefined>) => void,
-) : (parentElement: Element, nextNode: Node | null) => Root<undefined>;
+): (parentElement: Element, nextNode: Node | null) => Root<undefined>;
 
 function defineRoot<S>(
   onInvalidate: (root: Root<S>, state: S) => void,
-) : (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
+): (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 ```
 
 - `onInvalidate` - `OnRootInvalidated` hook that receives a root node and custom state associated with that root node.
@@ -722,18 +678,18 @@ function defineRoot<S>(
 ```ts
 function component(
   factory: (c: Component) => () => VComponent<undefined>,
-  areEqual?: () => boolean
+  areEqual?: () => boolean,
 ): () => VComponent<undefined>;
 function component<P>(
   factory: (c: Component) => (props: P) => VAny,
-  areEqual?: (prev: P, next: P) => boolean
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => VComponent<P>;
 ```
 
 - `factory` - Function that produces stateful component render functions.
 - `areEqual` - Optional function that checks input properties for changes and is used as an optimization hint to reduce unnecessary updates when properties didn't change.
 
-*When root subtree is updated with `forceUpdate` option, `areEqual` hint is ignored and all components are updated.*
+_When root subtree is updated with `forceUpdate` option, `areEqual` hint is ignored and all components are updated._
 
 #### **`getProps()`**
 
@@ -760,11 +716,9 @@ function invalidate(component: Component): void;
 Adds an unmount hook.
 
 ```ts
-function useUnmount(
-  component: Component,
-  hook: () => void,
-): void;
+function useUnmount(component: Component, hook: () => void): void;
 ```
+
 - `component` - Component instance.
 - `hook` - Unmount hook.
 
@@ -775,10 +729,7 @@ function useUnmount(
 `useMemo` creates a memoized function.
 
 ```ts
-function useMemo<T, U>(
-  areEqual: (prev: T, next: T) => boolean,
-  fn: (props: T) => U,
-): (props: T) => U;
+function useMemo<T, U>(areEqual: (prev: T, next: T) => boolean, fn: (props: T) => U): (props: T) => U;
 ```
 
 - `areEqual` - Checks input properties for changes to avoid recomputations.
@@ -789,13 +740,7 @@ function useMemo<T, U>(
 `useState` creates a reactive component state.
 
 ```ts
-function useState<S>(
-  component: Component,
-  state: S,
-): [
-  get: () => S,
-  set: (s: S) => void,
-];
+function useState<S>(component: Component, state: S): [get: () => S, set: (s: S) => void];
 ```
 
 - `component` - Component instance.
@@ -814,10 +759,7 @@ function useReducer<S, A>(
   component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
-): [
-  get: () => S,
-  dispatch: Dispatch<A>,
-];
+): [get: () => S, dispatch: Dispatch<A>];
 ```
 
 - `component` - Component instance.
@@ -837,14 +779,11 @@ You can think of it as a combination of `mount`, `update` and `unmount` lifecycl
 `useEffect` creates a side effect that is executed immediately after root node finishes an update.
 
 ```ts
-function useEffect(
-  component: Component,
-  effect: () => (() => void) | void,
-): () => void;
+function useEffect(component: Component, effect: () => (() => void) | void): () => void;
 function useEffect<P>(
   component: Component,
   effect: (props: P) => (() => void) | void,
-  areEqual?: (prev: P, next: P) => boolean
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -859,14 +798,11 @@ Returns a side effect function that should be invoked in a render function.
 `useAnimationFrameEffect` creates a side effect that is executed before [animation frame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 ```ts
-function useAnimationFrameEffect(
-  component: Component,
-  effect: () => (() => void) | void,
-): () => void;
+function useAnimationFrameEffect(component: Component, effect: () => (() => void) | void): () => void;
 function useAnimationFrameEffect<P>(
   component: Component,
   effect: (props: P) => (() => void) | void,
-  areEqual?: (prev: P, next: P) => boolean
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -881,14 +817,11 @@ Returns a side effect function that should be invoked in a render function.
 `useIdleEffect` creates a side effect that is executed when browser is [idle](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
 ```ts
-function useIdleEffect(
-  ccomponent: Component,
-  effect: () => (() => void) | void,
-): () => void;
+function useIdleEffect(ccomponent: Component, effect: () => (() => void) | void): () => void;
 function useIdleEffect<P>(
   ccomponent: Component,
   effect: (props: P) => (() => void) | void,
-  areEqual?: (prev: P, next: P) => boolean
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -905,11 +838,7 @@ Returns a side effect function that should be invoked in a render function.
 `List` creates a dynamic lists.
 
 ```ts
-function List<E, K>(
-  entries: E[],
-  getKey: (entry: E, index: number) => K,
-  render: (entry: E) => VAny,
-): VList;
+function List<E, K>(entries: E[], getKey: (entry: E, index: number) => K, render: (entry: E) => VAny): VList;
 ```
 
 - `entries` - Input data.
@@ -936,18 +865,10 @@ Returns a `get` function that finds the closest context value, and a `provider` 
 const [getContextValue, contextValueProvider] = context();
 
 const Example = component((c) => {
-  return () => html`
-    <h1>Hello ${getContextValue(c)}</h1>
-  `;
+  return () => html` <h1>Hello ${getContextValue(c)}</h1> `;
 });
 
-update(
-  createRoot(document.body),
-  contextValueProvider(
-    "World",
-    Example(),
-  ),
-);
+update(createRoot(document.body), contextValueProvider("World", Example()));
 ```
 
 ### Element Directive
@@ -956,9 +877,7 @@ update(
 algorithm.
 
 ```ts
-type ElementDirective = <E extends Element>(
-  element: E,
-) => void;
+type ElementDirective = <E extends Element>(element: E) => void;
 ```
 
 ### DOM Utilities
@@ -1002,9 +921,7 @@ Event dispatcher invokes event handlers synchronously. All event handlers are in
 `findDOMNode` finds the closest DOM node child that belongs to a stateful node subtree.
 
 ```ts
-function findDOMNode<T extends Node | Text>(
-  node: SNode | null,
-): T | null;
+function findDOMNode<T extends Node | Text>(node: SNode | null): T | null;
 ```
 
 - `node` - Stateful node.
@@ -1014,10 +931,7 @@ function findDOMNode<T extends Node | Text>(
 `containsDOMElement` checks if a stateful node contains a DOM elements in its subtree.
 
 ```ts
-function containsDOMElement(
-  node: SNode,
-  element: Element,
-): boolean;
+function containsDOMElement(node: SNode, element: Element): boolean;
 ```
 
 - `node` - Stateful node.
@@ -1028,10 +942,7 @@ function containsDOMElement(
 `hasDOMElement` checks if a stateful node has a DOM element as its child.
 
 ```ts
-function hasDOMElement(
-  node: SNode,
-  child: Element,
-): boolean;
+function hasDOMElement(node: SNode, child: Element): boolean;
 ```
 
 - `node` - Stateful node.
@@ -1080,16 +991,10 @@ const Example = component(() => {
   const _onTouchDown = (ev) => {};
 
   const addPassiveTouchDown = (element) => {
-    element.addEventListener(
-      "touchdown",
-      _onTouchDown,
-      { passive: true },
-    );
+    element.addEventListener("touchdown", _onTouchDown, { passive: true });
   };
 
-  return () => html`
-    <div ${addPassiveTouchDown}></div>
-  `;
+  return () => html` <div ${addPassiveTouchDown}></div> `;
 });
 ```
 
@@ -1114,9 +1019,7 @@ const useDynamicArg = () => {
 const Example = component(() => {
   const arg = useDynamicArg();
 
-  return ([key, value]) => html`
-    <div ${arg(key, value)}></div>
-  `;
+  return ([key, value]) => html` <div ${arg(key, value)}></div> `;
 });
 ```
 
@@ -1145,15 +1048,10 @@ const CodeMirror = component((c) => {
   // ^ When effect doesn't have any dependencies, it can be executed just
   // once in the outer scope. Effect will run when its DOM tree is mounted.
 
-  return () => html`
-    <div class="CodeMirror"></div>
-  `;
+  return () => html` <div class="CodeMirror"></div> `;
 });
 
-update(
-  createRoot(document.body),
-  CodeMirror(),
-);
+update(createRoot(document.body), CodeMirror());
 ```
 
 ## Advanced
@@ -1173,7 +1071,7 @@ Component invalidation algorithm is implemented by marking component as dirty an
 3. Root Node marked with `DirtySubtree` flag, `OnRootInvalidated()` hook invoked.
 4. Component invalidated and marked with `Dirty` flag, parents already marked with `DirtySubtree` flag.
 
-When scheduler decides to update a root node with a dirty subtree, it starts a dirty checking algorithm. This algorithm goes top-down in a right-to-left order, visiting all nodes with a dirty subtree flag until it reaches a dirty  component and updates it.
+When scheduler decides to update a root node with a dirty subtree, it starts a dirty checking algorithm. This algorithm goes top-down in a right-to-left order, visiting all nodes with a dirty subtree flag until it reaches a dirty component and updates it.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-dark.png">
@@ -1202,9 +1100,7 @@ Each call-site that creates a template has unique identity, so even identical te
 
 ```js
 function TemplateUniqueIdentity(condition, text) {
-  return (condition)
-    ? html`div ${text}`
-    : html`div ${text}`;
+  return condition ? html`<div>${text}</div>` : html`<div>${text}</div>`;
 }
 ```
 
@@ -1229,7 +1125,7 @@ function setTheme(t) {
 
 const App = component((c) => {
   const toggleTheme = () => {
-    setTheme((theme === "Light") ? "Dark" : "Light");
+    setTheme(theme === "Light" ? "Dark" : "Light");
   };
   return () => html`
     <div>
@@ -1251,7 +1147,13 @@ const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
 
   return () => html`
-    <div @click=${() => { setCount(count() + 1); }}>${count()}</div>
+    <div
+      @click=${() => {
+        setCount(count() + 1);
+      }}
+    >
+      ${count()}
+    </div>
   `;
 });
 ```
@@ -1261,11 +1163,11 @@ After event handler hoisting, it will be transformed into:
 ```js
 const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
-  const __ivi_hoist_1 = () => { setCount(count() + 1); };
+  const __ivi_hoist_1 = () => {
+    setCount(count() + 1);
+  };
 
-  return () => html`
-    <div @click=${__ivi_hoist_1}>${count()}</div>
-  `;
+  return () => html` <div @click=${__ivi_hoist_1}>${count()}</div> `;
 });
 ```
 
@@ -1276,7 +1178,13 @@ const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
 
   return () => html`
-    <div @click=${(() => { setCount(count() + 1); })}>${count()}</div>
+    <div
+      @click=${() => {
+        setCount(count() + 1);
+      }}
+    >
+      ${count()}
+    </div>
   `;
 });
 ```
@@ -1306,26 +1214,25 @@ interface VNode<D extends VDescriptor, P> {
 
 type VArray = VAny[];
 type VAny =
-  | null       // empty slot
-  | undefined  // empty slot
-  | false      // empty slot
-  | string     // text
-  | number     // text
-  | VRoot      // VNode<RootDescriptor, RootProps>
-  | VTemplate  // VNode<TemplateDescriptor, P>
+  | null // empty slot
+  | undefined // empty slot
+  | false // empty slot
+  | string // text
+  | number // text
+  | VRoot // VNode<RootDescriptor, RootProps>
+  | VTemplate // VNode<TemplateDescriptor, P>
   | VComponent // VNode<ComponentDescriptor, P>
-  | VContext   // VNode<ContextDescriptor, ContextProps<T>>
-  | VList      // VNode<ListDescriptor, ListProps<K>>
-  | VArray     // VAny[]
-  ;
+  | VContext // VNode<ContextDescriptor, ContextProps<T>>
+  | VList // VNode<ListDescriptor, ListProps<K>>
+  | VArray; // VAny[]
 
 // 20 bytes
 // Root Props stores a location where its children should be rendered.
 interface RootProps {
   // Parent Element
-  p: Element,
+  p: Element;
   // Next Node
-  n: Node | null,
+  n: Node | null;
 }
 
 // 20 bytes
@@ -1340,9 +1247,9 @@ interface ContextProps<T> {
 // 20 bytes
 interface ListProps<K> {
   // Keys that uniquely identify each stateless node in a dynamic list.
-  k: K[],
+  k: K[];
   // Stateless nodes
-  v: VAny[],
+  v: VAny[];
 }
 ```
 
@@ -1359,7 +1266,7 @@ interface SNode1<V extends VAny, S1> {
   // Children nodes.
   c: SNode | (SNode | null)[] | null;
   // Parent node.
-  p: SNode | null,
+  p: SNode | null;
   // State Slot #1.
   s1: S1;
 }
@@ -1469,15 +1376,15 @@ type TemplateDescriptor = VDescriptor<TemplateData, () => Element>;
 
 interface TemplateData {
   // stateSize / childrenSize / svg flag
-  f: number,
+  f: number;
   // Prop OpCodes
-  p: PropOpCode[],
+  p: PropOpCode[];
   // Child OpCodes
-  c: ChildOpCode[],
+  c: ChildOpCode[];
   // State OpCodes
-  s: StateOpCode[],
+  s: StateOpCode[];
   // Strings
-  d: string[],
+  d: string[];
 }
 
 // Stateless tree node VTemplate.
@@ -1491,12 +1398,8 @@ Template compiler doesn't just eliminate compilation step during runtime, it als
 ```js
 import { className } from "styles.css";
 
-const a = (id) => html`
-<div class=${className} id=${id}></div>
-`;
-const b = (id) => html`
-<div class=${className} id=${id}></div>
-`;
+const a = (id) => html` <div class=${className} id=${id}></div> `;
+const b = (id) => html` <div class=${className} id=${id}></div> `;
 ```
 
 Will generate two different templates with shared data structures:
@@ -1508,22 +1411,24 @@ import { _h, _T, _t } from "ivi";
 const EMPTY_ARRAY = [];
 const __IVI_STRINGS__ = ["id"];
 const ELEMENT_FACTORY_1 = _h('<div class="' + className + '"></div>');
-const SHARED_OP_CODES_1 = [/*..*/];
+const SHARED_OP_CODES_1 = [
+  /*..*/
+];
 const _tpl_a = _T(
-  /* factory */ELEMENT_FACTORY_1,
-  /* flags */0,
-  /* propOpCodes */SHARED_OP_CODES_1,
-  /* childOpCodes */EMPTY_ARRAY,
-  /* stateOpCodes */EMPTY_ARRAY,
-  /* shared strings */__IVI_STRINGS__,
+  /* factory */ ELEMENT_FACTORY_1,
+  /* flags */ 0,
+  /* propOpCodes */ SHARED_OP_CODES_1,
+  /* childOpCodes */ EMPTY_ARRAY,
+  /* stateOpCodes */ EMPTY_ARRAY,
+  /* shared strings */ __IVI_STRINGS__,
 );
 const _tpl_b = _T(
-  /* factory */ELEMENT_FACTORY_1,
-  /* flags */0,
-  /* propOpCodes */SHARED_OP_CODES_1,
-  /* childOpCodes */EMPTY_ARRAY,
-  /* stateOpCodes */EMPTY_ARRAY,
-  /* shared strings */__IVI_STRINGS__,
+  /* factory */ ELEMENT_FACTORY_1,
+  /* flags */ 0,
+  /* propOpCodes */ SHARED_OP_CODES_1,
+  /* childOpCodes */ EMPTY_ARRAY,
+  /* stateOpCodes */ EMPTY_ARRAY,
+  /* shared strings */ __IVI_STRINGS__,
 );
 
 const a = (id) => _t(_tpl_a, [id]);
@@ -1539,10 +1444,12 @@ Shared strrings (attribute keys, event names, etc) are deduplicated into one arr
 ivi is designed as an embeddable solution, so that it can be integrated into existing frameworks or web components. The basic root node instantiated with `createRoot()` function is using microtask queue to schedule updates. Root nodes with custom scheduling algorithm can be created by defining new root factories with `defineRoot()` function.
 
 ```ts
-function defineRoot(onInvalidate: (root: Root<undefined>) => void)
-  : (parentElement: Element, nextNode: Node | null) => Root<undefined>;
-function defineRoot<S>(onInvalidate: (root: Root<S>) => void)
-  : (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
+function defineRoot(
+  onInvalidate: (root: Root<undefined>) => void,
+): (parentElement: Element, nextNode: Node | null) => Root<undefined>;
+function defineRoot<S>(
+  onInvalidate: (root: Root<S>) => void,
+): (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 ```
 
 As an example, to remove any batching and immediately update root subtree when it is invalidated we can define the following root node:
