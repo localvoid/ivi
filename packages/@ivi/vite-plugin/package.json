@@ -1,6 +1,6 @@
 {
   "name": "@ivi/vite-plugin",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "type": "module",
   "exports": {
     ".": "./dist/index.js"
@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "@ivi/compiler": "workspace:^",
-    "@rollup/pluginutils": "catalog:",
     "rollup": "catalog:"
   },
   "scripts": {

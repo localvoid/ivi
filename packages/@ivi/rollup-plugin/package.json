@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "@ivi/compiler": "workspace:^",
-    "@rollup/pluginutils": "catalog:",
     "rollup": "catalog:"
   },
   "scripts": {
