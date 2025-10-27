@@ -1,5 +1,5 @@
-import type { HookFilter, RolldownPlugin } from "rolldown";
 import { TemplateCompiler, type CompilerOptions } from "@ivi/compiler";
+import type { HookFilter, RolldownPlugin } from "rolldown";
 
 export interface IviOptions extends CompilerOptions {
   readonly filter?: HookFilter,
@@ -14,9 +14,10 @@ export function ivi(options: IviOptions = {}): RolldownPlugin {
     name: "ivi",
 
     transform: {
-      filter: options.filter ?? {
+      filter: {
         code: "ivi",
         moduleType: ["js", "jsx", "ts", "tsx"],
+        ...options.filter,
       },
       async handler(code: string, _id: string, { moduleType }) {
         try {

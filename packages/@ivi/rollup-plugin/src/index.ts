@@ -1,18 +1,11 @@
-import type { Plugin } from "rollup";
-import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import { TemplateCompiler, type CompilerOptions } from "@ivi/compiler";
+import type { HookFilter, Plugin } from "rollup";
 
 export interface IviOptions extends CompilerOptions {
-  include?: FilterPattern | undefined;
-  exclude?: FilterPattern | undefined;
+  readonly filter?: HookFilter,
 }
 
-export function ivi(options?: IviOptions): Plugin {
-  const filter = createFilter(
-    options?.include ?? /\.(m?js|m?ts)$/,
-    options?.exclude,
-  );
-
+export function ivi(options: IviOptions = {}): Plugin {
   const compiler = new TemplateCompiler({
     dedupeStrings: options?.dedupeStrings ?? true,
     oveo: options?.oveo ?? false,
@@ -20,22 +13,20 @@ export function ivi(options?: IviOptions): Plugin {
   return {
     name: "ivi",
 
-    async transform(code: string, id: string) {
-      if (
-        !filter(id) &&
-        // Fast-path for modules that doesn't contain any ivi code.
-        !code.includes("ivi")
-      ) {
-        return null;
-      }
-
-      try {
-        const result = await compiler.transform(code, "tsx");
-        const map = result.map;
-        code = result.code;
-        return map ? { code, map } : { code };
-      } catch (err) {
-        this.error(`Failed to transform: ${err}`);
+    transform: {
+      filter: {
+        code: "ivi",
+        ...options.filter,
+      },
+      async handler(code: string, id: string) {
+        try {
+          const result = await compiler.transform(code, "tsx");
+          const map = result.map;
+          code = result.code;
+          return map ? { code, map } : { code };
+        } catch (err) {
+          this.error(`Failed to transform: ${err}`);
+        }
       }
     },
 
