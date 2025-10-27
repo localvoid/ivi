@@ -251,11 +251,11 @@ html` <div class="a" /> `;
 2. Inline whitespaces are collapsed into one whitespace:
 
 ```htm
-<div>  <span>  a  b  </span><  /div>
+<div>  <span>  a  b  </span>  </div>
 ```
 
 ```htm
-<div><span> a b </span></div>
+<div> <span> a b </span> </div>
 ```
 
 3. Whitespaces around newlines in text nodes are collapsed into one whitespace:
@@ -1531,11 +1531,7 @@ const onSubmit = async (ev) => {
 
 ## External Dependencies
 
-ivi runtime doesn't depend on any external libraries.
-
-ivi dev tools has a minimal set of dependencies:
-
-- [`@rollup/pluginutils`](https://github.com/rollup/plugins) is used in Vite and Rollup plugins to filter out modules.
+ivi doesn't depend on any external libraries.
 
 ## License
 
