@@ -16,6 +16,9 @@
   "dependencies": {
     "@ivi/compiler": "workspace:^"
   },
+  "devDependencies": {
+    "rolldown": "catalog:"
+  },
   "scripts": {
     "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   },
