@@ -76,7 +76,7 @@ jobs:
         with:
           toolchain: stable
           targets: ${{ matrix.settings.target }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ${{ env.ACTION_CACHE_PATH }}
           key: NAPI-${{ matrix.settings.target }}-${{ matrix.settings.host }}
@@ -124,7 +124,7 @@ jobs:
           architecture: ${{ matrix.settings.architecture }}
       - uses: oven-sh/setup-bun@v2
       - uses: extractions/setup-just@v3
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ${{ env.ACTION_CACHE_PATH }}
           key: ${{ matrix.settings.target }}-${{ matrix.settings.host }}
@@ -148,7 +148,7 @@ jobs:
           node-version: 24
       - uses: oven-sh/setup-bun@v2
       - uses: extractions/setup-just@v3
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ${{ env.ACTION_CACHE_PATH }}
           key: NAPI-x86_64-unknown-linux-gnu-ubuntu-latest
