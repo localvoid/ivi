@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "type": "module",
   "sideEffects": false,
   "exports": {

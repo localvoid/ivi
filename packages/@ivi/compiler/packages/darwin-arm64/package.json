@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler-darwin-arm64",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "cpu": [
     "arm64"
   ],
