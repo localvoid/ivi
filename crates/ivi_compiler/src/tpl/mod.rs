@@ -102,13 +102,8 @@ pub fn compile_template<'a>(
                     ctx.ast.vec1(ctx.ast.variable_declarator(
                         SPAN,
                         VariableDeclarationKind::Const,
-                        ctx.ast.binding_pattern(
-                            BindingPatternKind::BindingIdentifier(
-                                ctx.alloc(uid.create_binding_identifier(ctx)),
-                            ),
-                            NONE,
-                            false,
-                        ),
+                        ctx.ast.binding_pattern_binding_identifier(SPAN, uid.name),
+                        NONE,
                         Some(if dedupe_strings {
                             ctx.ast.expression_call(
                                 SPAN,
