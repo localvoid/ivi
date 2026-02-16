@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler-linux-arm64-gnu",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "cpu": [
     "arm64"
   ],

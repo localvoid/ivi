@@ -1,6 +1,6 @@
 {
   "name": "@ivi/compiler-win32-arm64-msvc",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "cpu": [
     "arm64"
   ],
