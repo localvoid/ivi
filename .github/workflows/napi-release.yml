@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 24
       - uses: oven-sh/setup-bun@v2
-      - uses: extractions/setup-just@v3
+      - uses: extractions/setup-just@v4
       - name: Increment versions and push changes
         run: |
           just napi increment-versions ${{ github.event.inputs.increment }}
