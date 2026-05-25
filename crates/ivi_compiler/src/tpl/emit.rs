@@ -188,11 +188,11 @@ fn emit_static_template<'a>(
     );
 
     if is_simple_node {
-        ast.expression_string_literal(SPAN, ast.atom(&node.tag), None)
+        ast.expression_string_literal(SPAN, ast.str(&node.tag), None)
     } else {
         quasis.push(ast.template_element(
             SPAN,
-            TemplateElementValue { raw: ast.atom(&static_part), cooked: None },
+            TemplateElementValue { raw: ast.str(&static_part), cooked: None },
             true,
             false,
         ));
@@ -247,7 +247,7 @@ fn _emit_static_template<'a>(
                         static_part.push_str("=\"");
                         quasis.push(ast.template_element(
                             SPAN,
-                            TemplateElementValue { raw: ast.atom(static_part), cooked: None },
+                            TemplateElementValue { raw: ast.str(static_part), cooked: None },
                             false,
                             false,
                         ));

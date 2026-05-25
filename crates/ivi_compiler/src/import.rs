@@ -89,7 +89,7 @@ impl<'a> ImportSymbols<'a> {
             imports.push(Statement::ImportDeclaration(ctx.ast.alloc_import_declaration(
                 SPAN,
                 Some(specifiers),
-                ctx.ast.string_literal(SPAN, ctx.ast.atom("ivi"), None),
+                ctx.ast.string_literal(SPAN, ctx.ast.str("ivi"), None),
                 None,
                 NONE,
                 ImportOrExportKind::Value,
@@ -107,7 +107,7 @@ impl<'a> ImportSymbols<'a> {
             imports.push(Statement::ImportDeclaration(ctx.ast.alloc_import_declaration(
                 SPAN,
                 Some(specifiers),
-                ctx.ast.string_literal(SPAN, ctx.ast.atom("oveo"), None),
+                ctx.ast.string_literal(SPAN, ctx.ast.str("oveo"), None),
                 None,
                 NONE,
                 ImportOrExportKind::Value,
@@ -140,7 +140,7 @@ fn spec<'a>(
 ) -> ImportDeclarationSpecifier<'a> {
     ImportDeclarationSpecifier::ImportSpecifier(ctx.ast.alloc_import_specifier(
         SPAN,
-        ModuleExportName::IdentifierName(ctx.ast.identifier_name(SPAN, ctx.ast.atom(name))),
+        ModuleExportName::IdentifierName(ctx.ast.identifier_name(SPAN, ctx.ast.str(name))),
         id.create_binding_identifier(ctx),
         ImportOrExportKind::Value,
     ))

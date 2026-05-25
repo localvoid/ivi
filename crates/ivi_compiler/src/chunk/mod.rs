@@ -43,7 +43,7 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ChunkCompiler<'_> {
                             let mut strings = ctx.ast.vec_with_capacity(self.strings.len());
                             for (s, _) in indexed {
                                 strings.push(ArrayExpressionElement::StringLiteral(
-                                    ctx.ast.alloc_string_literal(SPAN, ctx.ast.atom(s), None),
+                                    ctx.ast.alloc_string_literal(SPAN, ctx.ast.str(s), None),
                                 ));
                             }
                             *node = ctx.ast.expression_array(SPAN, strings);

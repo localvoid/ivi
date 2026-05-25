@@ -107,7 +107,7 @@ pub fn compile_template<'a>(
                         Some(if dedupe_strings {
                             ctx.ast.expression_call(
                                 SPAN,
-                                ctx.ast.expression_identifier(SPAN, ctx.ast.atom("__IVI_TPL__")),
+                                ctx.ast.expression_identifier(SPAN, ctx.ast.str("__IVI_TPL__")),
                                 NONE,
                                 ctx.ast.vec_from_array([template_descriptor.into()]),
                                 false,
@@ -147,7 +147,7 @@ pub fn compile_template<'a>(
                 exprs.push(call);
             }
             TemplateNode::Text(text) => {
-                exprs.push(ctx.ast.expression_string_literal(SPAN, ctx.ast.atom(&text), None));
+                exprs.push(ctx.ast.expression_string_literal(SPAN, ctx.ast.str(&text), None));
             }
             TemplateNode::Expr(i) => {
                 exprs.push(tpl.expressions[i].take_in(ctx.ast.allocator));
@@ -193,7 +193,7 @@ fn strings_into_expression<'a>(
         ctx.ast.vec_from_iter(
             strings
                 .iter()
-                .map(|s| ctx.ast.expression_string_literal(SPAN, ctx.ast.atom(s), None).into()),
+                .map(|s| ctx.ast.expression_string_literal(SPAN, ctx.ast.str(s), None).into()),
         ),
     )
 }
