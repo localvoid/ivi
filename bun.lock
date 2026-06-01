@@ -4,7 +4,7 @@
   "workspaces": {
     "": {
       "devDependencies": {
-        "@napi-rs/cli": "^3.6.2",
+        "@napi-rs/cli": "^3.7.0",
         "@types/bun": "^1.3.14",
         "@types/node": "^25.9.1",
         "typescript": "^6.0.3",
@@ -12,7 +12,7 @@
     },
     "packages/@ivi/compiler": {
       "name": "@ivi/compiler",
-      "version": "0.1.14",
+      "version": "0.1.15",
       "optionalDependencies": {
         "@ivi/compiler-darwin-arm64": "workspace:*",
         "@ivi/compiler-darwin-x64": "workspace:*",
@@ -24,27 +24,27 @@
     },
     "packages/@ivi/compiler/packages/darwin-arm64": {
       "name": "@ivi/compiler-darwin-arm64",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/compiler/packages/darwin-x64": {
       "name": "@ivi/compiler-darwin-x64",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/compiler/packages/linux-arm64-gnu": {
       "name": "@ivi/compiler-linux-arm64-gnu",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/compiler/packages/linux-x64-gnu": {
       "name": "@ivi/compiler-linux-x64-gnu",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/compiler/packages/win32-arm64-msvc": {
       "name": "@ivi/compiler-win32-arm64-msvc",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/compiler/packages/win32-x64-msvc": {
       "name": "@ivi/compiler-win32-x64-msvc",
-      "version": "0.1.14",
+      "version": "0.1.15",
     },
     "packages/@ivi/identity": {
       "name": "@ivi/identity",
@@ -176,7 +176,7 @@
 
     "@ivi/vite-plugin": ["@ivi/vite-plugin@workspace:packages/@ivi/vite-plugin"],
 
-    "@napi-rs/cli": ["@napi-rs/cli@3.6.2", "", { "dependencies": { "@inquirer/prompts": "^8.0.0", "@napi-rs/cross-toolchain": "^1.0.3", "@napi-rs/wasm-tools": "^1.0.1", "@octokit/rest": "^22.0.1", "clipanion": "^4.0.0-rc.4", "colorette": "^2.0.20", "emnapi": "^1.9.1", "es-toolkit": "^1.41.0", "js-yaml": "^4.1.0", "obug": "^2.0.0", "semver": "^7.7.3", "typanion": "^3.14.0" }, "peerDependencies": { "@emnapi/runtime": "^1.7.1" }, "optionalPeers": ["@emnapi/runtime"], "bin": { "napi": "dist/cli.js", "napi-raw": "cli.mjs" } }, "sha512-jy5rABUh9tbE/vPRzw9kGzGuqZiVslyDQUV8LkvjzqVX/oJMN7g0U1uhtr9L3W1H+iRM/urXHXUf+CE4n8FvLA=="],
+    "@napi-rs/cli": ["@napi-rs/cli@3.7.0", "", { "dependencies": { "@inquirer/prompts": "^8.0.0", "@napi-rs/cross-toolchain": "^1.0.3", "@napi-rs/wasm-tools": "^1.0.1", "@octokit/rest": "^22.0.1", "clipanion": "^4.0.0-rc.4", "colorette": "^2.0.20", "emnapi": "^1.10.0", "es-toolkit": "^1.41.0", "js-yaml": "^4.1.0", "obug": "^2.0.0", "semver": "^7.7.3", "typanion": "^3.14.0" }, "peerDependencies": { "@emnapi/runtime": "^1.7.1" }, "optionalPeers": ["@emnapi/runtime"], "bin": { "napi": "dist/cli.js", "napi-raw": "cli.mjs" } }, "sha512-3d3+rmxlOIV/G1zPWeX4PCxuYnhcCQM2BvY9rtimC8RO0dFR9gtYP+Grov+WoduZtfWRj5N1XvytWeRxxCk5zw=="],
 
     "@napi-rs/cross-toolchain": ["@napi-rs/cross-toolchain@1.0.3", "", { "dependencies": { "@napi-rs/lzma": "^1.4.5", "@napi-rs/tar": "^1.1.0", "debug": "^4.4.1" }, "peerDependencies": { "@napi-rs/cross-toolchain-arm64-target-aarch64": "^1.0.3", "@napi-rs/cross-toolchain-arm64-target-armv7": "^1.0.3", "@napi-rs/cross-toolchain-arm64-target-ppc64le": "^1.0.3", "@napi-rs/cross-toolchain-arm64-target-s390x": "^1.0.3", "@napi-rs/cross-toolchain-arm64-target-x86_64": "^1.0.3", "@napi-rs/cross-toolchain-x64-target-aarch64": "^1.0.3", "@napi-rs/cross-toolchain-x64-target-armv7": "^1.0.3", "@napi-rs/cross-toolchain-x64-target-ppc64le": "^1.0.3", "@napi-rs/cross-toolchain-x64-target-s390x": "^1.0.3", "@napi-rs/cross-toolchain-x64-target-x86_64": "^1.0.3" }, "optionalPeers": ["@napi-rs/cross-toolchain-arm64-target-aarch64", "@napi-rs/cross-toolchain-arm64-target-armv7", "@napi-rs/cross-toolchain-arm64-target-ppc64le", "@napi-rs/cross-toolchain-arm64-target-s390x", "@napi-rs/cross-toolchain-arm64-target-x86_64", "@napi-rs/cross-toolchain-x64-target-aarch64", "@napi-rs/cross-toolchain-x64-target-armv7", "@napi-rs/cross-toolchain-x64-target-ppc64le", "@napi-rs/cross-toolchain-x64-target-s390x", "@napi-rs/cross-toolchain-x64-target-x86_64"] }, "sha512-ENPfLe4937bsKVTDA6zdABx4pq9w0tHqRrJHyaGxgaPq03a2Bd1unD5XSKjXJjebsABJ+MjAv1A2OvCgK9yehg=="],
 
@@ -408,7 +408,7 @@
 
     "debug": ["debug@4.4.1", "", { "dependencies": { "ms": "^2.1.3" } }, "sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ=="],
 
-    "emnapi": ["emnapi@1.9.2", "", { "peerDependencies": { "node-addon-api": ">= 6.1.0" }, "optionalPeers": ["node-addon-api"] }, "sha512-OdUoQe/8so7FvubnE/DNV9sNNSFwDYQiK4ZCAz4agMnD1s6faLuDn2gzxfJrmMoKfxZhhsckqGNwqPnS5K140A=="],
+    "emnapi": ["emnapi@1.10.0", "", { "peerDependencies": { "node-addon-api": ">= 6.1.0" }, "optionalPeers": ["node-addon-api"] }, "sha512-swoyZjupDvLoe/KC3HZ4SY1JUN+tviT6eOZ3Px28TZAYdBHtRIiMWWrIUUH+2/9CYY4fNTID1YhYZ+kdFHszHg=="],
 
     "emoji-regex": ["emoji-regex@10.6.0", "", {}, "sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A=="],
 
