@@ -194,7 +194,6 @@ fn emit_static_template<'a>(
             SPAN,
             TemplateElementValue { raw: ast.str(&static_part), cooked: None },
             true,
-            false,
         ));
 
         ast.expression_template_literal(SPAN, quasis, expressions)
@@ -248,7 +247,6 @@ fn _emit_static_template<'a>(
                         quasis.push(ast.template_element(
                             SPAN,
                             TemplateElementValue { raw: ast.str(static_part), cooked: None },
-                            false,
                             false,
                         ));
                         expressions
