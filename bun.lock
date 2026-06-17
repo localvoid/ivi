@@ -4,7 +4,7 @@
   "workspaces": {
     "": {
       "devDependencies": {
-        "@napi-rs/cli": "^3.7.1",
+        "@napi-rs/cli": "^3.7.2",
         "@types/bun": "^1.3.14",
         "@types/node": "^25.9.3",
         "typescript": "^6.0.3",
