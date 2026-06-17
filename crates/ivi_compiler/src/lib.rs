@@ -53,14 +53,14 @@ pub fn compile_module(
         _ => return Err(CompilerError::ModuleType(module_type.to_string())),
     };
     let ret = Parser::new(&allocator, source_text, source_type).parse();
-    if let Some(err) = ret.errors.first() {
+    if let Some(err) = ret.diagnostics.first() {
         return Err(CompilerError::SyntaxError(err.to_string()));
     }
 
     let mut program = ret.program;
 
     let ret = SemanticBuilder::new().with_excess_capacity(1.0).build(&program);
-    if let Some(err) = ret.errors.first() {
+    if let Some(err) = ret.diagnostics.first() {
         return Err(CompilerError::SemanticError(err.to_string()));
     }
 
@@ -94,14 +94,14 @@ pub fn compile_chunk(
     let allocator = Allocator::default();
     let source_type = SourceType::default();
     let ret = Parser::new(&allocator, source_text, source_type).parse();
-    if let Some(err) = ret.errors.first() {
+    if let Some(err) = ret.diagnostics.first() {
         return Err(CompilerError::SyntaxError(err.to_string()));
     }
 
     let mut program = ret.program;
 
     let ret = SemanticBuilder::new().with_excess_capacity(0.1).build(&program);
-    if let Some(err) = ret.errors.first() {
+    if let Some(err) = ret.diagnostics.first() {
         return Err(CompilerError::SemanticError(err.to_string()));
     }
 
