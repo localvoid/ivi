@@ -1,6 +1,6 @@
 use std::collections::hash_map;
 
-use oxc_allocator::{Address, Allocator, GetAddress, TakeIn};
+use oxc_allocator::{Address, Allocator, GetAddress, TakeIn, Vec as ArenaVec};
 use oxc_ast::ast::*;
 use oxc_diagnostics::OxcDiagnostic;
 use oxc_semantic::{Scoping, SymbolId};
@@ -110,7 +110,7 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ModuleCompiler<'a, '_> {
                                 &mut expr.body.statements.get_mut(0)
                             {
                                 expr_stmt.expression = oveo_intrinsic(
-                                    expr_stmt.expression.take_in(ctx.ast.allocator),
+                                    expr_stmt.expression.take_in(ctx),
                                     self.imports.hoist(ctx),
                                     ctx,
                                 );
@@ -208,11 +208,11 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ModuleCompiler<'a, '_> {
         if !self.templates.is_empty() {
             let statements = &mut node.body;
             let mut new_statements =
-                ctx.ast.vec_with_capacity(statements.len() + self.templates.len());
+                ArenaVec::with_capacity_in(statements.len() + self.templates.len(), ctx);
 
             for stmt in statements.drain(..) {
                 if let Some(s) = self.templates.remove(&stmt.address()) {
-                    new_statements.extend(s.into_iter());
+                    new_statements.extend(s);
                 }
                 new_statements.push(stmt);
             }

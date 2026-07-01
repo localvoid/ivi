@@ -1,7 +1,9 @@
+use oxc_allocator::Vec as ArenaVec;
 use oxc_ast::{
     NONE,
     ast::{
-        Expression, ImportDeclarationSpecifier, ImportOrExportKind, ModuleExportName, Statement,
+        Expression, IdentifierName, ImportDeclaration, ImportDeclarationSpecifier,
+        ImportOrExportKind, ImportSpecifier, ModuleExportName, Statement, Str, StringLiteral,
     },
 };
 use oxc_semantic::SymbolFlags;
@@ -63,7 +65,7 @@ impl<'a> ImportSymbols<'a> {
 
     pub fn create_import_statements(&self, ctx: &mut TraverseCtx<'a>) -> Vec<Statement<'a>> {
         let mut imports = Vec::new();
-        let mut specifiers = ctx.ast.vec();
+        let mut specifiers = ArenaVec::new_in(ctx);
         if let Some(id) = &self.descriptor_id {
             specifiers.push(spec("_T", id, ctx));
         }
@@ -86,17 +88,18 @@ impl<'a> ImportSymbols<'a> {
             specifiers.push(spec("EMPTY_ARRAY", id, ctx));
         }
         if !specifiers.is_empty() {
-            imports.push(Statement::ImportDeclaration(ctx.ast.alloc_import_declaration(
+            imports.push(Statement::ImportDeclaration(ImportDeclaration::boxed(
                 SPAN,
                 Some(specifiers),
-                ctx.ast.string_literal(SPAN, ctx.ast.str("ivi"), None),
+                StringLiteral::new(SPAN, Str::from_str_in("ivi", ctx), None, ctx),
                 None,
                 NONE,
                 ImportOrExportKind::Value,
+                ctx,
             )));
         }
 
-        let mut specifiers = ctx.ast.vec();
+        let mut specifiers = ArenaVec::new_in(ctx);
         if let Some(id) = &self.hoist_id {
             specifiers.push(spec("hoist", id, ctx));
         }
@@ -104,13 +107,14 @@ impl<'a> ImportSymbols<'a> {
             specifiers.push(spec("dedupe", id, ctx));
         }
         if !specifiers.is_empty() {
-            imports.push(Statement::ImportDeclaration(ctx.ast.alloc_import_declaration(
+            imports.push(Statement::ImportDeclaration(ImportDeclaration::boxed(
                 SPAN,
                 Some(specifiers),
-                ctx.ast.string_literal(SPAN, ctx.ast.str("oveo"), None),
+                StringLiteral::new(SPAN, Str::from_str_in("oveo", ctx), None, ctx),
                 None,
                 NONE,
                 ImportOrExportKind::Value,
+                ctx,
             )));
         }
 
@@ -138,10 +142,15 @@ fn spec<'a>(
     id: &BoundIdentifier<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) -> ImportDeclarationSpecifier<'a> {
-    ImportDeclarationSpecifier::ImportSpecifier(ctx.ast.alloc_import_specifier(
+    ImportDeclarationSpecifier::ImportSpecifier(ImportSpecifier::boxed(
         SPAN,
-        ModuleExportName::IdentifierName(ctx.ast.identifier_name(SPAN, ctx.ast.str(name))),
+        ModuleExportName::IdentifierName(IdentifierName::new(
+            SPAN,
+            Str::from_str_in(name, ctx),
+            ctx,
+        )),
         id.create_binding_identifier(ctx),
         ImportOrExportKind::Value,
+        ctx,
     ))
 }

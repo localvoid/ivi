@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use oxc_allocator::{TakeIn, Vec as ArenaVec};
 use oxc_ast::{
     AstBuilder,
-    ast::{Expression, TemplateElement, TemplateElementValue},
+    ast::{Expression, Str, StringLiteral, TemplateElement, TemplateElementValue, TemplateLiteral},
 };
 use oxc_span::SPAN;
 
@@ -140,11 +140,8 @@ fn _create_expr_map<'a>(
             TProperty::Event(p) => {
                 let i = p.value.inner();
                 if oveo {
-                    expressions[i] = oveo_intrinsic(
-                        expressions[i].take_in(ctx.ast.allocator),
-                        imports.hoist(ctx),
-                        ctx,
-                    );
+                    expressions[i] =
+                        oveo_intrinsic(expressions[i].take_in(ctx), imports.hoist(ctx), ctx);
                 }
                 map.insert(i);
             }
@@ -173,8 +170,8 @@ fn emit_static_template<'a>(
     ast: &mut AstBuilder<'a>,
 ) -> Expression<'a> {
     let mut static_part = String::new();
-    let mut quasis = ast.vec();
-    let mut expressions = ast.vec();
+    let mut quasis = ArenaVec::new_in(ast);
+    let mut expressions = ArenaVec::new_in(ast);
     // Node doesn't have any children elements/texts or static properties
     let mut is_simple_node = true;
     _emit_static_template(
@@ -188,15 +185,21 @@ fn emit_static_template<'a>(
     );
 
     if is_simple_node {
-        ast.expression_string_literal(SPAN, ast.str(&node.tag), None)
-    } else {
-        quasis.push(ast.template_element(
+        Expression::StringLiteral(StringLiteral::boxed(
             SPAN,
-            TemplateElementValue { raw: ast.str(&static_part), cooked: None },
+            Str::from_str_in(&node.tag, ast),
+            None,
+            ast,
+        ))
+    } else {
+        quasis.push(TemplateElement::new(
+            SPAN,
+            TemplateElementValue { raw: Str::from_str_in(&static_part, ast), cooked: None },
             true,
+            ast,
         ));
 
-        ast.expression_template_literal(SPAN, quasis, expressions)
+        Expression::TemplateLiteral(TemplateLiteral::boxed(SPAN, quasis, expressions, ast))
     }
 }
 
@@ -244,13 +247,16 @@ fn _emit_static_template<'a>(
                         static_part.push(' ');
                         static_part.push_str(&p.key);
                         static_part.push_str("=\"");
-                        quasis.push(ast.template_element(
+                        quasis.push(TemplateElement::new(
                             SPAN,
-                            TemplateElementValue { raw: ast.str(static_part), cooked: None },
+                            TemplateElementValue {
+                                raw: Str::from_str_in(static_part, ast),
+                                cooked: None,
+                            },
                             false,
+                            ast,
                         ));
-                        expressions
-                            .push(template_expressions[v.index.inner()].take_in(ast.allocator));
+                        expressions.push(template_expressions[v.index.inner()].take_in(ast));
                         static_part.clear();
                         static_part.push('"');
                     }

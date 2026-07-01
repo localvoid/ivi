@@ -1,4 +1,8 @@
-use oxc_ast::{NONE, ast::Expression};
+use oxc_allocator::Vec as ArenaVec;
+use oxc_ast::{
+    NONE,
+    ast::{CallExpression, Expression},
+};
 use oxc_span::SPAN;
 
 use crate::context::TraverseCtx;
@@ -9,5 +13,12 @@ pub fn oveo_intrinsic<'a>(
     callee: Expression<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) -> Expression<'a> {
-    ctx.ast.expression_call(SPAN, callee, NONE, ctx.ast.vec_from_array([expr.into()]), false)
+    Expression::CallExpression(CallExpression::boxed(
+        SPAN,
+        callee,
+        NONE,
+        ArenaVec::from_array_in([expr.into()], ctx),
+        false,
+        ctx,
+    ))
 }

@@ -40,13 +40,15 @@ impl<'a> Traverse<'a, TraverseCtxState<'a>> for ChunkCompiler<'_> {
                             let mut indexed: Vec<_> = self.strings.iter().collect();
                             indexed.sort_by_key(|e| e.1);
 
-                            let mut strings = ctx.ast.vec_with_capacity(self.strings.len());
+                            let mut strings = ArenaVec::with_capacity_in(self.strings.len(), ctx);
                             for (s, _) in indexed {
                                 strings.push(ArrayExpressionElement::StringLiteral(
-                                    ctx.ast.alloc_string_literal(SPAN, ctx.ast.str(s), None),
+                                    StringLiteral::boxed(SPAN, Str::from_str_in(s, ctx), None, ctx),
                                 ));
                             }
-                            *node = ctx.ast.expression_array(SPAN, strings);
+                            *node = Expression::ArrayExpression(ArrayExpression::boxed(
+                                SPAN, strings, ctx,
+                            ));
                         }
                     }
                 }
