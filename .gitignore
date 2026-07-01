@@ -6,7 +6,7 @@
 .DS_Store
 
 # Rust
-/target/
+/target
 
 # NAPI-rs
 /napi-artifacts/
